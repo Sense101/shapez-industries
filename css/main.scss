@@ -1,0 +1,423 @@
+$icons: (shape_combiner, belt_crossing, hyperlink, shape_compressor);
+
+$tutorial_images: (
+    shape_combiner,
+    miner-deep,
+    balancer-smart-splitter,
+    balancer-smart-merger,
+    belt_crossing,
+    belt_crossing-corner,
+    belt_crossing-switcher,
+    underground_belt-smart,
+    stacker-quad,
+    cutter-laser,
+    storage-mini,
+    shape_compressor,
+    hyperlink,
+    hyperlink-exit,
+    hyperlink-entrance
+);
+
+@each $building in $icons {
+    [data-icon="building_icons/#{$building}.png"] {
+        .icon {
+            background-image: url("../res/ui/icons/#{$building}.png") !important;
+        }
+    }
+}
+
+@each $building in $tutorial_images {
+    [data-icon="building_tutorials/#{$building}.png"] {
+        /* @load-async */
+        background-image: url("../res/ui/tutorial_images/#{$building}.png") !important;
+    }
+}
+
+/* Blueprint placer */
+#ingame_HUD_BlueprintPlacer {
+    .costContainer {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center;
+        justify-content: center;
+
+        .tierContainer {
+            &.hidden {
+                display: none;
+            }
+
+            &:not(.hidden) {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 0 5px;
+
+                .tierCost {
+                    line-height: 30px;
+                    &.canAfford {
+                        color: white;
+                    }
+                    &:not(.canAfford) {
+                        color: rgb(255, 97, 128);
+                    }
+                }
+
+                canvas,
+                .lockedSprite {
+                    margin-left: 0px;
+                    width: 30px;
+                    height: 30px;
+                    text-align: center;
+                    font-size: 18px;
+                }
+                .lockedSprite {
+                    color: rgb(255, 97, 128);
+                }
+
+                &.locked {
+                    canvas {
+                        display: none;
+                    }
+                }
+                &:not(.locked) {
+                    .lockedSprite {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* Toolbar */
+#ingame_HUD_BuildingsToolbar {
+    .secondary .building {
+        &:nth-of-type(2),
+        &:nth-of-type(7) {
+            margin-right: 20px;
+        }
+    }
+}
+
+/* Game Menu */
+#ingame_HUD_GameMenu {
+    > button,
+    > .button {
+        font-size: 6px !important;
+        &.research {
+            grid-column: 1;
+            & {
+                /* @load-async */
+                background-image: url("../res/ui/research.png");
+            }
+        }
+
+        &.shop {
+            grid-column: 2;
+        }
+
+        &.stats {
+            grid-column: 3;
+        }
+
+        &.save {
+            grid-column: 4;
+        }
+
+        &.settings {
+            grid-column: 5;
+        }
+
+        &.hasBadge {
+            &.research {
+                filter: none;
+                opacity: 0.9;
+
+                & {
+                    /* @load-async */
+                    background-image: url("../res/ui/research_active.png");
+                }
+            }
+        }
+    }
+}
+
+/* Research */
+
+@mixin DarkThemeOverride {
+    @at-root html[data-theme="dark"] &,
+        &[data-theme="dark"] {
+        @content;
+    }
+}
+
+@mixin DarkThemeInvert {
+    @include DarkThemeOverride {
+        filter: invert(1);
+    }
+}
+
+// Removes the unit (px, %, etc) from a value
+@function strip-unit($number) {
+    @if type-of($number) == "number" and not unitless($number) {
+        @return $number / ($number * 0 + 1);
+    }
+
+    @return $number;
+}
+
+// Helper method to scale a value, for use in calc() etc
+@function D($v) {
+    $baseValue: strip-unit($v) * 1px;
+    @return calc(#{$baseValue} * var(--ui-scale));
+}
+
+// Helper method to scale a property value
+@mixin S($propName, $v1, $v2: "", $v3: "", $v4: "", $important: false) {
+    $impSuffix: "";
+    @if $important == true {
+        $impSuffix: "!important";
+    }
+
+    $v1: D($v1);
+
+    @if $v2 != "" {
+        $v2: D($v2);
+    }
+
+    @if $v3 != "" {
+        $v3: D($v3);
+    }
+    @if $v4 != "" {
+        $v4: D($v4);
+    }
+
+    #{$propName}: #{$v1} #{$v2} #{$v3} #{$v4} #{$impSuffix};
+}
+
+// Helper method to scale the font size
+@mixin ScaleFont($fontSize, $lineHeight) {
+    font-size: D($fontSize * $mainFontScale);
+    line-height: D($lineHeight * $mainFontScale);
+}
+
+@mixin PlainText {
+    font-size: 13px;
+    line-height: 17px;
+    font-weight: 400;
+    font-family: "GameFont", sans-serif;
+    letter-spacing: 0.04em;
+}
+
+@mixin InlineAnimation($duration) {
+    $animName: autogen_anim_#{unique-id()};
+
+    @at-root {
+        @keyframes #{$animName} {
+            @content;
+        }
+    }
+
+    animation: $animName $duration !important;
+}
+
+$colorGreenBright: #66bb6a;
+$darkModeControlsBackground: darken(#535866, 5);
+
+#ingame_HUD_Research {
+    z-index: 400;
+
+    .content {
+        @include S(padding-right, 10px);
+        display: flex;
+        flex-direction: column;
+        @include S(width, 500px);
+
+        .variant {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            background: #eee;
+            @include S(border-radius, 2px);
+            @include S(margin-bottom, 4px);
+            @include S(padding, 5px, 10px);
+            @include S(grid-row-gap, 1px);
+            @include S(height, 85px);
+            grid-template-rows: #{D(20px)} auto;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            @include DarkThemeOverride {
+                background: $darkModeControlsBackground;
+            }
+
+            .title {
+                grid-column: 1 / 3;
+                grid-row: 1 / 2;
+                display: flex;
+                align-items: center;
+                flex-direction: row-reverse;
+                justify-content: flex-end;
+                @include DarkThemeOverride {
+                    color: #fff;
+                }
+
+                .tier {
+                    @include S(margin-right, 9px);
+                    background: $colorGreenBright;
+                    border-radius: 2px;
+                    text-transform: uppercase;
+                    color: #fff;
+                    text-align: center;
+                    font-weight: bold;
+                    @include S(min-width, 50px);
+                    @include S(padding, 0px, 10px);
+
+                    &[data-tier="0"] {
+                        background-color: rgb(73, 186, 190);
+                    }
+                    &[data-tier="1"] {
+                        background-color: rgb(88, 110, 207);
+                    }
+                    &[data-tier="2"] {
+                        background-color: rgb(189, 100, 192);
+                    }
+                    &[data-tier="3"] {
+                        background-color: rgb(243, 77, 48);
+                    }
+                }
+            }
+
+            .iconWrapper {
+                @include S(width, 40px);
+                @include S(height, 40px);
+                align-self: center;
+                justify-self: center;
+                grid-column: 1 / 2;
+                grid-row: 2 / 4;
+                @include S(margin-right, 10px);
+
+                .icon {
+                    @include S(width, 40px);
+                    @include S(height, 40px);
+                    background: center center / 80% no-repeat;
+                }
+            }
+
+            .description {
+                grid-column: 2 / 4;
+                grid-row: 1 / 2;
+                color: #aaa;
+                align-self: start;
+                justify-self: end;
+                @include PlainText;
+                @include S(font-size, 12px);
+            }
+
+            .requirements {
+                grid-column: 2 / 3;
+                grid-row: 3 / 4;
+                display: grid;
+                grid-auto-flow: column;
+                @include S(grid-gap, 9px);
+                justify-content: start;
+
+                .requirement {
+                    position: relative;
+                    display: flex;
+                    justify-content: start;
+                    align-items: center;
+
+                    canvas {
+                        @include S(width, 40px);
+                        @include S(height, 40px);
+                        &:hover {
+                            cursor: pointer;
+                            opacity: 0.7;
+                        }
+                    }
+
+                    .amount {
+                        letter-spacing: 0;
+                        background: #e2e4e6;
+                        @include S(font-size, 10px);
+
+                        @include S(line-height, 13px);
+                        @include S(border-radius, 2px);
+                        padding: 1px 0px 2px;
+                        position: relative;
+                        text-align: center;
+                        @include S(min-width, 60px);
+                        overflow: hidden;
+                        width: 100%;
+                        z-index: 0;
+
+                        @include DarkThemeOverride {
+                            background: #333438;
+                            color: #fff;
+                        }
+
+                        .progressBar {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            z-index: -1;
+                            @include S(border-radius, 2px);
+                            display: inline-block;
+                            transition: all 0.2s ease-in-out;
+                            transition-property: width background-color;
+                            background: #bdbfca;
+
+                            @include DarkThemeOverride {
+                                background: #8c8d96;
+                            }
+
+                            &.complete {
+                                background: $colorGreenBright !important;
+                            }
+                        }
+                    }
+                }
+            }
+
+            button.buy {
+                grid-column: 3 / 4;
+                grid-row: 3 / 4;
+                align-self: center;
+                justify-self: end;
+                background-color: $colorGreenBright;
+                color: #fff;
+
+                transition: all 0.2s ease-in-out;
+                transition-property: background-color, opacity;
+
+                &:not(.buyable) {
+                    background-color: #aaa;
+                    cursor: default;
+                    pointer-events: none;
+                    opacity: 0.3;
+                }
+
+                &.buyable {
+                    @include InlineAnimation(1s ease-in-out infinite) {
+                        0% {
+                        }
+
+                        50% {
+                            background-color: lighten($colorGreenBright, 10);
+                        }
+                        100% {
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .hidden {
+        display: none;
+    }
+}
