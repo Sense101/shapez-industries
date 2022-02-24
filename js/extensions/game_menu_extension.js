@@ -70,7 +70,11 @@ export const GameMenuExtension = ({ $old }) => ({
 
                 if (keybinding) {
                     const binding = this.root.keyMapper.getBinding(keybinding);
-                    binding.add(handler);
+                    binding.add(() => {
+                        if (visible()) {
+                            handler();
+                        }
+                    });
                 }
 
                 if (visible) {

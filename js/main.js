@@ -61,7 +61,6 @@ import {
     constantSignalEditEditConstantSignal,
     getWireBuildingIsUnlocked,
     hubSystemRedrawHubBaseTexture,
-    mainMenuCheckForModDifferences,
 } from "./methodOverrides";
 import { MetaCutterBuilding } from "shapez/game/buildings/cutter";
 import {
@@ -94,16 +93,18 @@ import { enumPainterVariants, MetaPainterBuilding } from "shapez/game/buildings/
 import { defaultBuildingVariant } from "shapez/game/meta_building";
 import { enumHubGoalRewards } from "shapez/game/tutorial_goals";
 import { MetaReaderBuilding } from "shapez/game/buildings/reader";
-import { HUDPartTutorialHints } from "shapez/game/hud/parts/tutorial_hints";
-import { HUDInteractiveTutorial } from "shapez/game/hud/parts/interactive_tutorial";
 import { HUDTutorialVideoOffer } from "shapez/game/hud/parts/tutorial_video_offer";
 import { replaceGoalExplanations } from "./new_goal_mappings";
 import { GameMenuExtension } from "./extensions/game_menu_extension";
 import { HUDGameMenu } from "shapez/game/hud/parts/game_menu";
 import { HUDResearch, researchVariants } from "./hud/research";
 import { HubGoals } from "shapez/game/hub_goals";
-import { types } from "shapez/savegame/serialization";
 import { HubGoalsExtension } from "./extensions/hub_goals_extension";
+import { MainMenuExtension } from "./extensions/main_menu_extension";
+import { MetaBeltBuilding } from "shapez/game/buildings/belt";
+import { MetaRotaterBuilding } from "shapez/game/buildings/rotater";
+import { MetaMixerBuilding } from "shapez/game/buildings/mixer";
+import { MetaTrashBuilding } from "shapez/game/buildings/trash";
 
 class ModImpl extends Mod {
     init() {
@@ -232,12 +233,7 @@ class ModImpl extends Mod {
     }
 
     addLoadSaveWarning() {
-        this.modInterface.replaceMethod(
-            MainMenuState,
-            "checkForModDifferences",
-            //@ts-ignore this works
-            mainMenuCheckForModDifferences
-        );
+        this.modInterface.extendClass(MainMenuState, MainMenuExtension);
     }
 
     addLaserCutter() {
@@ -282,6 +278,19 @@ class ModImpl extends Mod {
             if (element.constructor.name === name) {
                 element["secondaryBuildings"].unshift(MetaBeltCrossingBuilding, MetaHyperlinkBuilding);
                 element["secondaryBuildings"].push(MetaShapeCombinerBuilding, MetaShapeCompressorBuilding);
+
+                //element["primaryBuildings"] = [
+                //    MetaBeltBuilding,
+                //    MetaBalancerBuilding,
+                //    MetaUndergroundBeltBuilding,
+                //    MetaMinerBuilding,
+                //    MetaCutterBuilding,
+                //    MetaRotaterBuilding,
+                //    MetaStackerBuilding,
+                //    MetaMixerBuilding,
+                //    MetaPainterBuilding,
+                //    MetaTrashBuilding,
+                //];
             }
         });
     }
@@ -399,6 +408,17 @@ class ModImpl extends Mod {
                         console.log("Adding reward from saved research: " + reward);
                     }
                     root.hud.parts.research.rerenderFull();
+                }
+            }
+
+            const shop = root.hud.parts.shop;
+            for (const upgradeId in shop.upgradeToElements) {
+                const currentTier = root.hubGoals.getUpgradeLevel(upgradeId);
+                if (currentTier > shop.maxUpgradeTier) {
+                    root.hubGoals.upgradeLevels[upgradeId] = shop.maxUpgradeTier;
+                    console.log(
+                        "Resetting " + upgradeId + " upgrades to max tier - tier " + shop.maxUpgradeTier
+                    );
                 }
             }
         });

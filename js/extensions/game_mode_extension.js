@@ -71,7 +71,7 @@ function generateUpgrades(limitedVersion = false) {
                 required: [{ shape: upgradeShapes[2], amount: 1500 }],
             },
             {
-                required: [{ shape: upgradeShapes[3], amount: 4000 }],
+                required: [{ shape: upgradeShapes[3], amount: 5000 }],
             },
             {
                 required: [{ shape: upgradeShapes[4], amount: 7000 }],

@@ -58,18 +58,22 @@ export const StackerExtension = ({ $old }) => ({
                 {
                     pos: new Vector(0, 0),
                     direction: enumDirection.left,
+                    filter: "shape",
                 },
                 {
                     pos: new Vector(0, 0),
                     direction: enumDirection.bottom,
+                    filter: "shape",
                 },
                 {
                     pos: new Vector(1, 0),
                     direction: enumDirection.bottom,
+                    filter: "shape",
                 },
                 {
                     pos: new Vector(2, 0),
                     direction: enumDirection.bottom,
+                    filter: "shape",
                 },
             ]);
         } else {
@@ -80,10 +84,12 @@ export const StackerExtension = ({ $old }) => ({
                 {
                     pos: new Vector(0, 0),
                     direction: enumDirection.bottom,
+                    filter: "shape",
                 },
                 {
                     pos: new Vector(1, 0),
                     direction: enumDirection.bottom,
+                    filter: "shape",
                 },
             ]);
         }

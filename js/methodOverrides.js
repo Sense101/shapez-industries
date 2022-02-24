@@ -5,71 +5,13 @@ import { FormElementInput, FormElementItemChooser } from "shapez/core/modal_dial
 import { Rectangle } from "shapez/core/rectangle";
 import { ORIGINAL_SPRITE_SCALE } from "shapez/core/sprites";
 import { fillInLinkIntoTranslation, formatBigNumber } from "shapez/core/utils";
-import { Entity } from "shapez/game/entity";
 import { HUDConstantSignalEdit } from "shapez/game/hud/parts/constant_signal_edit";
 import { BOOL_FALSE_SINGLETON, BOOL_TRUE_SINGLETON } from "shapez/game/items/boolean_item";
 import { COLOR_ITEM_SINGLETONS } from "shapez/game/items/color_item";
 import { HubSystem } from "shapez/game/systems/hub";
 import { enumHubGoalRewards } from "shapez/game/tutorial_goals";
-import { MODS } from "shapez/mods/modloader";
-import { MainMenuState } from "shapez/states/main_menu";
 import { T } from "shapez/translations";
 import { newHubGoalRewards } from "./new_hub_goals";
-
-/**
- * @this {MainMenuState}
- */
-export function mainMenuCheckForModDifferences($original, [savegame]) {
-    const difference = MODS.computeModDifference(savegame.currentData.mods);
-
-    if (difference.missing.length === 0 && difference.extra.length === 0) {
-        return Promise.resolve();
-    }
-
-    let dialogHtml = T.dialogs.modsDifference.desc;
-
-    function formatMod(mod) {
-        let html = `
-            <div class="dialogModsMod">
-                <div class="name">${mod.name}</div>
-                <div class="version">${T.mods.version} ${mod.version}</div>
-                <button class="website styledButton" onclick="window.open('${mod.website.replace(
-                    /"'/,
-                    ""
-                )}')">${T.mods.modWebsite}
-                </button>
-            </div>
-            `;
-        if (mod.name == "Shapez Industries" && !difference.missing.find(m => m.name == "Shapez Industries")) {
-            html += `
-                        <div style="background:red;border-radius:2px;color:white;padding:6px;">
-                            WARNING: Shapez Industries is NOT designed to be added to existing savegames. Proceed at your own risk. I don't know what will happen and I don't care. <br><br>
-                            ~ Sense101
-                        </div>`;
-        }
-        return html;
-    }
-
-    if (difference.missing.length > 0) {
-        dialogHtml += "<h3>" + T.dialogs.modsDifference.missingMods + "</h3>";
-        dialogHtml += difference.missing.map(formatMod).join("<br>");
-    }
-
-    if (difference.extra.length > 0) {
-        dialogHtml += "<h3>" + T.dialogs.modsDifference.newMods + "</h3>";
-        dialogHtml += difference.extra.map(formatMod).join("<br>");
-    }
-
-    const signals = this.dialogs.showWarning(T.dialogs.modsDifference.title, dialogHtml, [
-        "cancel:good",
-        "continue:bad",
-    ]);
-
-    return new Promise(resolve => {
-        //@ts-ignore
-        signals.continue.add(resolve);
-    });
-}
 
 /**
  * Asks the entity to enter a valid signal code
@@ -86,7 +28,10 @@ export function constantSignalEditEditConstantSignal($original, [entity, { delet
     const signal = entity.components.ConstantSignal.signal;
     const signalValueInput = new FormElementInput({
         id: "signalValue",
-        label: fillInLinkIntoTranslation(T.dialogs.editSignal.descShortKey, THIRDPARTY_URLS.shapeViewer),
+        label: fillInLinkIntoTranslation(
+            T.dialogs.editSignal.descShortKey,
+            "https://sense101.github.io/shapez-industries-viewer"
+        ),
         placeholder: "",
         defaultValue: signal ? signal.getAsCopyableKey() : "",
         validator: val => this.parseSignalCode(entity, val),

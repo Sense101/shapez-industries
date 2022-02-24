@@ -38,6 +38,30 @@ export const HubGoalsExtension = ({ $old }) => ({
         };
     },
 
+    /**
+     * Returns whether a given upgrade can be unlocked
+     * @param {string} upgradeId
+     */
+    canUnlockUpgrade(upgradeId) {
+        const tiers = this.root.gameMode.getUpgrades()[upgradeId];
+        const currentLevel = this.getUpgradeLevel(upgradeId);
+
+        if (currentLevel >= tiers.length || currentLevel >= this.root.hud.parts.shop.maxUpgradeTier) {
+            // Max level
+            return false;
+        }
+
+        const tierData = tiers[currentLevel];
+
+        for (let i = 0; i < tierData.required.length; ++i) {
+            const requirement = tierData.required[i];
+            if ((this.storedShapes[requirement.shape] || 0) < requirement.amount) {
+                return false;
+            }
+        }
+        return true;
+    },
+
     computeFreeplayShape(level) {
         const layerCount = clamp(this.level / 50, 2, 4);
 

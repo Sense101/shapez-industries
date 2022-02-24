@@ -1,10 +1,10 @@
 {
     "entry": "main.js",
     "id": "shapez-industries",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "Shapez Industries",
     "author": "Sense_101",
     "description": "Everything you thought was missing from shapez.io - New buildings! New shapes! Revamped progression! New mechanics! More new shapes! Better freeplay! And... so much more.",
-    "website": "",
+    "website": "https://shapez.mod.io/shapez-industries",
     "settings": {}
 }

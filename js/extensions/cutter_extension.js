@@ -72,7 +72,7 @@ export const CutterExtension = ({ $old }) => ({
                 { pos: new Vector(1, 0), direction: enumDirection.bottom },
             ]);
             entity.components.ItemAcceptor.setSlots([
-                { pos: new Vector(0, 0), direction: enumDirection.left },
+                { pos: new Vector(0, 0), direction: enumDirection.left, filter: "shape" },
             ]);
 
             entity.components.ItemProcessor.type = laserCutterProcessorType;

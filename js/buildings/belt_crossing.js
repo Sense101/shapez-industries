@@ -94,7 +94,15 @@ export class MetaBeltCrossingBuilding extends ModMetaBuilding {
      * @param {GameRoot} root
      */
     getAvailableVariants(root) {
-        return [defaultBuildingVariant, enumBeltCrossingVariants.corner, enumBeltCrossingVariants.switcher];
+        /** @type {Array<string>} */
+        const available = [defaultBuildingVariant];
+        if (root.hubGoals.isRewardUnlocked(newHubGoalRewards.reward_corner_crossing)) {
+            available.push(enumBeltCrossingVariants.corner);
+        }
+        if (root.hubGoals.isRewardUnlocked(newHubGoalRewards.reward_line_crossing)) {
+            available.push(enumBeltCrossingVariants.switcher);
+        }
+        return available;
     }
 
     /**

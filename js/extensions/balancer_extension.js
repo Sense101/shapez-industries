@@ -31,7 +31,7 @@ const smartRotationVariants = [
     {
         id: "right",
         mergerMatrice: generateMatrixRotations([0, 1, 0, 0, 1, 1, 0, 1, 0]),
-        splitterMatrice: generateMatrixRotations([0, 1, 0, 1, 1, 0, 0, 1, 0]),
+        splitterMatrice: generateMatrixRotations([0, 1, 0, 0, 1, 1, 0, 1, 0]),
     },
     {
         id: "all",
