@@ -294,7 +294,7 @@ export function generateLevelDefinitions(limitedVersion = false) {
         // Research
         {
             shape: researchShapes[0],
-            required: 300,
+            required: 200,
             reward: newHubGoalRewards.reward_research,
         },
 
@@ -302,7 +302,7 @@ export function generateLevelDefinitions(limitedVersion = false) {
         // Bugprints
         {
             shape: blueprintShapes[0],
-            required: 400,
+            required: 350,
             reward: enumHubGoalRewards.reward_blueprints,
         },
 
