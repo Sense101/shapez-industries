@@ -6,8 +6,12 @@ import { ModInterface } from "shapez/mods/mod_interface";
 export class BeltCrossingComponent extends Component {
     constructor(inputsToProcess = 1) {
         super();
-        this.inputSlots = [];
+        this.clear();
         this.inputsToProcess = inputsToProcess;
+    }
+
+    clear() {
+        this.inputSlots = [];
     }
 
     static getId() {

@@ -63,6 +63,7 @@ export const ShapeDefinitionExtension = ({ $old }) => ({
             const layer = this.layers[layerIndex];
 
             let layerId = "";
+            let lastShapeCodePos = 0;
             for (let index = 0; index < 4; ++index) {
                 const item = layer[index];
                 const lastItem = layer[(index + 3) % 4];
@@ -75,11 +76,19 @@ export const ShapeDefinitionExtension = ({ $old }) => ({
                             layerId += "_";
                         } else {
                             layerId += shapeCode;
+                            lastShapeCodePos = index * 2;
                         }
                         layerId += "_";
 
                         if (layerId == "________") {
                             layerId = shapeCode + colorCode + "______";
+                        }
+                        const colors = [...layerId].filter((value, index) => index % 2 == 1).join("");
+                        if (colors == "____") {
+                            const part1 = layerId.slice(0, lastShapeCodePos + 1);
+                            const part2 = layerId.slice(lastShapeCodePos + 2);
+                            layerId = part1 + colorCode + part2;
+                            console.log(layerId);
                         }
                     } else {
                         layerId += shapeCode + enumColorToShortcode[item.color];

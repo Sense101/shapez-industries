@@ -28,6 +28,8 @@ const tierToRequiredAmount = {
     3: 3000,
 };
 
+const uniqueShapeRequirement = 30;
+
 export const researchVariants = {
     balancerSmartMerger: {
         building: MetaBalancerBuilding,
@@ -240,7 +242,7 @@ export class HUDResearch extends BaseHUDPart {
                 this.root.hubGoals.gainedRewards[reward] = 1;
                 this.researchedVariants.push(variant);
                 this.root.hubGoals.takeShapeByKey(researchShapes[tier - 1], tierToRequiredAmount[tier]);
-                this.root.hubGoals.takeShapeByKey(shape, 10);
+                this.root.hubGoals.takeShapeByKey(shape, uniqueShapeRequirement);
                 this.rerenderFull();
             });
 
@@ -279,7 +281,7 @@ export class HUDResearch extends BaseHUDPart {
 
             const tierShape = researchShapes[tier - 1];
             const shapes = [tierShape, shape];
-            const amounts = [tierToRequiredAmount[tier], 10];
+            const amounts = [tierToRequiredAmount[tier], uniqueShapeRequirement];
 
             for (let i = 0; i < shapes.length; i++) {
                 const container = makeDiv(handle.elemRequirements, null, ["requirement"]);

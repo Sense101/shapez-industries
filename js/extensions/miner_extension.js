@@ -52,11 +52,12 @@ export const MinerExtension = ({ $old }) => ({
  */
 export function addDeepMinerMultiplier(modInterface) {
     modInterface.replaceMethod(MinerSystem, "update", function ($original) {
-        let miningSpeed = this.root.hubGoals.getMinerBaseSpeed();
+        const baseSpeed = this.root.hubGoals.getMinerBaseSpeed();
 
         for (let i = 0; i < this.allEntities.length; ++i) {
             const entity = this.allEntities[i];
             const minerComp = entity.components.Miner;
+            let miningSpeed = baseSpeed;
             const deepMinerComp = entity.components[DeepMinerComponent.getId()];
             if (deepMinerComp) {
                 miningSpeed *= deepMinerComp.speedMultiplier;

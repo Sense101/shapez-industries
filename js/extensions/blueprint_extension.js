@@ -17,11 +17,7 @@ import { Entity } from "shapez/game/entity";
 const tierOneIds = [
     "balancer",
     "belt",
-    "constant_signal",
     "item_producer",
-    "lever",
-    "reader",
-    "rotater",
     "underground_belt",
     "wire_tunnel",
     "wire",
@@ -55,10 +51,6 @@ export const BlueprintExtension = ({ $old }) => ({
      * @param {GameRoot} root
      */
     canAfford(root) {
-        if (root.gameMode.getHasFreeCopyPaste()) {
-            return [true, true, true];
-        }
-
         const tiers = [false, false, false];
         const cost = this.getCost();
         for (let i = 0; i < cost.length; i++) {
@@ -96,7 +88,7 @@ export const BlueprintExtension = ({ $old }) => ({
                 // it's a small building
                 canPlaceEntities.push(true);
                 continue;
-            } else if (canAfford[1] && ratprints) {
+            } else if (!tierOneIds.includes(id) && canAfford[1] && ratprints) {
                 // it's a bigger building
                 canPlaceEntities.push(true);
                 continue;
