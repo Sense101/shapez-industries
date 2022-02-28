@@ -54,7 +54,10 @@ export class HyperlinkSystem extends GameSystemWithFilter {
                         if (
                             newTarget &&
                             newTarget.components[HyperlinkAcceptorComponent.getId()] &&
-                            newTarget.components[HyperlinkAcceptorComponent.getId()].slots.length > 0
+                            newTarget.components[HyperlinkAcceptorComponent.getId()].findMatchingSlot(
+                                targetTile,
+                                ejectSlotWsDirection
+                            )
                         ) {
                             slot.cachedTargetEntity = newTarget;
                             target = newTarget;

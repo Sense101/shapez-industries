@@ -25,15 +25,30 @@ export const HubGoalsExtension = ({ $old }) => ({
             return;
         }
 
-        //Floor Required amount to remove confusion
-        const required = Math.min(200, Math.floor(4 + (storyIndex - 26) * 0.25));
+        // we are at freeplay, work out a freeplay goal
+
+        const required = Math.min(300, Math.floor(this.level / 10));
+        let reward = enumHubGoalRewards.no_reward_freeplay;
+
+        // this is super messy, but I really don't care
+        if (this.level < 1100 && this.level % 10 == 0) {
+            reward = newHubGoalRewards.reward_upgrade_tier;
+        } else if (this.level < 11000 && this.level % 100 == 0) {
+            reward = newHubGoalRewards.reward_upgrade_tier;
+        } else if (this.level < 110000 && this.level % 1000 == 0) {
+            reward = newHubGoalRewards.reward_upgrade_tier;
+        } else if (this.level < 1100000 && this.level % 10000 == 0) {
+            reward = newHubGoalRewards.reward_upgrade_tier;
+        } else if (this.level < 11000000 && this.level % 100000 == 0) {
+            reward = newHubGoalRewards.reward_upgrade_tier;
+        } else if (this.level < 110000000 && this.level % 1000000 == 0) {
+            reward = newHubGoalRewards.reward_upgrade_tier;
+        }
+
         this.currentGoal = {
             definition: this.computeFreeplayShape(this.level),
             required,
-            reward:
-                this.level % 10 == 0
-                    ? newHubGoalRewards.reward_upgrade_tier
-                    : enumHubGoalRewards.no_reward_freeplay,
+            reward,
             throughputOnly: true,
         };
     },
@@ -63,12 +78,13 @@ export const HubGoalsExtension = ({ $old }) => ({
     },
 
     computeFreeplayShape(level) {
-        const layerCount = clamp(this.level / 50, 2, 4);
+        const maxLayerCount = clamp(this.level / 25, 2, 4);
 
-        /** @type {Array<import("shapez/game/shape_definition").ShapeLayer>} */
+        /** @type {Array<import("./shape_definition_extension").ShapeLayer>} */
         let layers = [];
 
         const rng = new RandomNumberGenerator(this.root.map.seed + "/" + level);
+        const layerCount = rng.nextIntRange(Math.max(1, maxLayerCount - 1), maxLayerCount + 1);
 
         const allColors = generateRandomColorSet(rng);
 
@@ -146,7 +162,7 @@ export const HubGoalsExtension = ({ $old }) => ({
         let anyIsMissingTwo = false;
 
         for (let i = 0; i < layerCount; ++i) {
-            /** @type {import("shapez/game/shape_definition").ShapeLayer} */
+            /** @type {import("./shape_definition_extension").ShapeLayer} */
             const layer = [null, null, null, null];
             const colors = allColors[i];
 
@@ -159,6 +175,22 @@ export const HubGoalsExtension = ({ $old }) => ({
                         subShape: shape,
                         color: null,
                     };
+                }
+                if (rng.next() > 0.75) {
+                    // link stuff
+                    for (let k = 0; k < group.length; ++k) {
+                        const index = group[k];
+                        const quadBefore = (index + 3) % 4;
+                        const quadAfter = (index + 1) % 4;
+                        if (group.includes(quadBefore) && layer[quadBefore]) {
+                            layer[quadBefore].linkedAfter = true;
+                            layer[index].linkedBefore = true;
+                        }
+                        if (group.includes(quadAfter) && layer[quadAfter]) {
+                            layer[quadAfter].linkedBefore = true;
+                            layer[index].linkedAfter = true;
+                        }
+                    }
                 }
             }
 
@@ -176,17 +208,62 @@ export const HubGoalsExtension = ({ $old }) => ({
                 availableColors.splice(colorIndex, 1);
             }
 
+            for (let j = 0; j < pickedSymmetry.length; ++j) {
+                const group = pickedSymmetry[j];
+                if (rng.next() > 0.75) {
+                    // link stuff
+                    const color = layer[group[0]].color;
+                    for (let k = 0; k < group.length; ++k) {
+                        const index = group[k];
+                        const quadBefore = (index + 3) % 4;
+                        const quadAfter = (index + 1) % 4;
+                        if (group.includes(quadBefore) && layer[quadBefore]) {
+                            layer[quadBefore].linkedAfter = true;
+                            layer[index].linkedBefore = true;
+                        }
+                        if (group.includes(quadAfter) && layer[quadAfter]) {
+                            layer[quadAfter].linkedBefore = true;
+                            layer[index].linkedAfter = true;
+                        }
+
+                        if (layer[index]) {
+                            layer[index].color = color;
+                        }
+                    }
+                }
+            }
+
+            if (level > 100 && rng.next() > 0.8) {
+                layer[rng.nextIntRange(0, 4)] = null;
+            }
+
             // Sometimes they actually are missing *two* ones!
             // Make sure at max only one layer is missing it though, otherwise we could
             // create an uncreateable shape
-            if (level > 75 && rng.next() > 0.9 && !anyIsMissingTwo) {
+            if (level > 150 && rng.next() > 0.9 && !anyIsMissingTwo) {
                 layer[rng.nextIntRange(0, 4)] = null;
                 anyIsMissingTwo = true;
+            }
+
+            // and afterwards update links
+            for (let quadrantIndex = 0; quadrantIndex < 4; ++quadrantIndex) {
+                const quadrant = layer[quadrantIndex];
+                if (quadrant) {
+                    const lastQuadrant = layer[(quadrantIndex + 3) % 4];
+                    const nextQuadrant = layer[(quadrantIndex + 1) % 4];
+                    if (!lastQuadrant) {
+                        quadrant.linkedBefore = false;
+                    }
+                    if (!nextQuadrant) {
+                        quadrant.linkedAfter = false;
+                    }
+                }
             }
 
             layers.push(layer);
         }
 
+        //@ts-ignore no it's not the same
         const definition = new ShapeDefinition({ layers });
         return this.root.shapeDefinitionMgr.registerOrReturnHandle(definition);
     },

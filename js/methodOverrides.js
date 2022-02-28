@@ -5,9 +5,17 @@ import { FormElementInput, FormElementItemChooser } from "shapez/core/modal_dial
 import { Rectangle } from "shapez/core/rectangle";
 import { ORIGINAL_SPRITE_SCALE } from "shapez/core/sprites";
 import { fillInLinkIntoTranslation, formatBigNumber } from "shapez/core/utils";
-import { HUDConstantSignalEdit } from "shapez/game/hud/parts/constant_signal_edit";
+import { BaseItem } from "shapez/game/base_item";
+import { enumColors } from "shapez/game/colors";
+import { Entity } from "shapez/game/entity";
+import {
+    HUDConstantSignalEdit,
+    MODS_ADDITIONAL_CONSTANT_SIGNAL_RESOLVER,
+} from "shapez/game/hud/parts/constant_signal_edit";
 import { BOOL_FALSE_SINGLETON, BOOL_TRUE_SINGLETON } from "shapez/game/items/boolean_item";
 import { COLOR_ITEM_SINGLETONS } from "shapez/game/items/color_item";
+import { ShapeItem } from "shapez/game/items/shape_item";
+import { ShapeDefinition } from "shapez/game/shape_definition";
 import { HubSystem } from "shapez/game/systems/hub";
 import { enumHubGoalRewards } from "shapez/game/tutorial_goals";
 import { T } from "shapez/translations";
@@ -144,6 +152,48 @@ export function constantSignalEditEditConstantSignal($original, [entity, { delet
             this.root.logic.tryDeleteBuilding(entityRef);
         });
     }
+}
+
+/**
+ * Tries to parse a signal code
+ * @this {HUDConstantSignalEdit}
+ */
+export function parseSignalCode($original, [entity, code]) {
+    if (!this.root || !this.root.shapeDefinitionMgr) {
+        // Stale reference
+        return null;
+    }
+
+    code = code.trim();
+    const codeLower = code.toLowerCase();
+
+    if (MODS_ADDITIONAL_CONSTANT_SIGNAL_RESOLVER[codeLower]) {
+        return MODS_ADDITIONAL_CONSTANT_SIGNAL_RESOLVER[codeLower].apply(this, [entity]);
+    }
+
+    if (enumColors[codeLower]) {
+        return COLOR_ITEM_SINGLETONS[codeLower];
+    }
+
+    if (entity.components.WiredPins) {
+        if (code === "1" || codeLower === "true") {
+            return BOOL_TRUE_SINGLETON;
+        }
+
+        if (code === "0" || codeLower === "false") {
+            return BOOL_FALSE_SINGLETON;
+        }
+    }
+
+    if (ShapeDefinition.isValidShortKey(code)) {
+        // recalculate hash
+        const newDef = ShapeDefinition.fromShortKey(code);
+        newDef.cachedHash = null;
+        const newHash = newDef.getHash();
+        return this.root.shapeDefinitionMgr.getShapeItemFromShortKey(newHash);
+    }
+
+    return null;
 }
 
 /**

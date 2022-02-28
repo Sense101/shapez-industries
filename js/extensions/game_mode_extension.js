@@ -1,13 +1,8 @@
-import { RandomNumberGenerator } from "shapez/core/rng";
-import { clamp, findNiceIntegerValue } from "shapez/core/utils";
-import { enumColors } from "shapez/game/colors";
-import { HubGoals } from "shapez/game/hub_goals";
+import { findNiceIntegerValue } from "shapez/core/utils";
 import { UpgradeTiers, LevelDefinition, RegularGameMode } from "shapez/game/modes/regular";
-import { enumSubShape, ShapeDefinition } from "shapez/game/shape_definition";
 import { enumHubGoalRewards } from "shapez/game/tutorial_goals";
 import { ModInterface } from "shapez/mods/mod_interface";
 import { MOD_SIGNALS } from "shapez/mods/mod_signals";
-import { enumCombinedShape } from "../buildings/shape_combiner";
 import { newHubGoalRewards } from "../new_hub_goals";
 
 export const rocketShape = "SbCu--Cu:--Cb--Cb:1u--Sr--:----1r--";
@@ -17,7 +12,6 @@ export const blueprintShapes = [
     "Sb----Sb:3b3b3b3b:--3w3w--",
     "SbSbSbSb:1b1b1b1b:--CwCw--",
 ];
-const preparementShape = "____--Cy:1g____--:5w5w5w5w";
 
 export const researchShapes = ["CyCyCyCy:Cw--Cw--", "2y2y2y2y:6wWw6wWw", "__2y__2y:6wW_6wW_:6_Wr6_Wg"];
 
@@ -39,15 +33,15 @@ function generateUpgrades(limitedVersion = false) {
         return upgradesCache[limitedVersion];
     }
 
-    const fixedImprovements = [0.5, 0.5, 0.5, 0.5, 1];
+    const fixedImprovements = [0.5, 0.5, 0.5, 0.5, 1, 0.5, 0.5];
     const numEndgameUpgrades = 1000 - fixedImprovements.length - 1;
 
     function generateInfiniteUnlocks() {
         return new Array(numEndgameUpgrades).fill(null).map((_, i) => ({
             required: [
-                { shape: preparementShape, amount: 10000 + i * 1000 },
-                { shape: finalGameShape, amount: 15000 + i * 1500 },
-                { shape: rocketShape, amount: 20000 + i * 2000 },
+                { shape: upgradeShapes[4], amount: 15000 + i * 1500 },
+                { shape: finalGameShape, amount: 20000 + i * 2000 },
+                { shape: rocketShape, amount: 25000 + i * 2500 },
             ],
             excludePrevious: true,
         }));
@@ -74,16 +68,16 @@ function generateUpgrades(limitedVersion = false) {
                 required: [{ shape: upgradeShapes[3], amount: 5000 }],
             },
             {
-                required: [{ shape: upgradeShapes[4], amount: 7000 }],
+                required: [{ shape: upgradeShapes[4], amount: 10000 }],
             },
             {
-                required: [{ shape: preparementShape, amount: 5000 }],
+                required: [{ shape: upgradeShapes[4], amount: 12500 }],
                 excludePrevious: true,
             },
             {
                 required: [
-                    { shape: preparementShape, amount: 7500 },
-                    { shape: finalGameShape, amount: 10000 },
+                    { shape: upgradeShapes[4], amount: 15000 },
+                    { shape: finalGameShape, amount: 20000 },
                 ],
                 excludePrevious: true,
             },
@@ -106,13 +100,13 @@ function generateUpgrades(limitedVersion = false) {
                 required: [{ shape: upgradeShapes[4], amount: 10000 }],
             },
             {
-                required: [{ shape: preparementShape, amount: 5000 }],
+                required: [{ shape: upgradeShapes[4], amount: 12500 }],
                 excludePrevious: true,
             },
             {
                 required: [
-                    { shape: preparementShape, amount: 7500 },
-                    { shape: finalGameShape, amount: 10000 },
+                    { shape: upgradeShapes[4], amount: 15000 },
+                    { shape: finalGameShape, amount: 20000 },
                 ],
                 excludePrevious: true,
             },
@@ -135,13 +129,13 @@ function generateUpgrades(limitedVersion = false) {
                 required: [{ shape: upgradeShapes[4], amount: 10000 }],
             },
             {
-                required: [{ shape: preparementShape, amount: 5000 }],
+                required: [{ shape: upgradeShapes[4], amount: 12500 }],
                 excludePrevious: true,
             },
             {
                 required: [
-                    { shape: preparementShape, amount: 7500 },
-                    { shape: finalGameShape, amount: 10000 },
+                    { shape: upgradeShapes[4], amount: 15000 },
+                    { shape: finalGameShape, amount: 20000 },
                 ],
                 excludePrevious: true,
             },
@@ -164,13 +158,13 @@ function generateUpgrades(limitedVersion = false) {
                 required: [{ shape: upgradeShapes[4], amount: 10000 }],
             },
             {
-                required: [{ shape: preparementShape, amount: 5000 }],
+                required: [{ shape: upgradeShapes[4], amount: 12500 }],
                 excludePrevious: true,
             },
             {
                 required: [
-                    { shape: preparementShape, amount: 7500 },
-                    { shape: finalGameShape, amount: 10000 },
+                    { shape: upgradeShapes[4], amount: 15000 },
+                    { shape: finalGameShape, amount: 20000 },
                 ],
                 excludePrevious: true,
             },
@@ -373,7 +367,7 @@ export function generateLevelDefinitions(limitedVersion = false) {
         // 19
         // Storage
         {
-            shape: preparementShape, // preparement shape
+            shape: "____--Cy:1g____--:5w5w5w5w", // preparement shape
             required: 4500,
             reward: enumHubGoalRewards.reward_storage,
         },

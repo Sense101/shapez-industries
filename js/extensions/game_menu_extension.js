@@ -13,16 +13,13 @@ export const GameMenuExtension = ({ $old }) => ({
             {
                 id: "research",
                 label: "Research",
-                // @ts-ignore
                 handler: () => this.root.hud.parts.research.show(),
                 visible: () => this.root.hubGoals.level > 9,
                 badge: () => this.root.hud.parts.research.getAvailableResearch(),
-                showBadgeNumber: true,
             },
             {
                 id: "shop",
                 label: "Upgrades",
-                // @ts-ignore
                 handler: () => this.root.hud.parts.shop.show(),
                 keybinding: KEYMAPPINGS.ingame.menuOpenShop,
                 badge: () => this.root.hubGoals.getAvailableUpgradeCount(),
@@ -60,45 +57,41 @@ export const GameMenuExtension = ({ $old }) => ({
          * }>} */
         this.visibilityToUpdate = [];
 
-        // @ts-ignore
-        buttons.forEach(
-            ({ id, label, handler, keybinding, badge, notification, visible, showBadgeNumber }) => {
-                const button = document.createElement("button");
-                button.classList.add(id);
-                this.element.appendChild(button);
-                this.trackClicks(button, handler);
+        buttons.forEach(({ id, label, handler, keybinding, badge, notification, visible }) => {
+            const button = document.createElement("button");
+            button.classList.add(id);
+            this.element.appendChild(button);
+            this.trackClicks(button, handler);
 
-                if (keybinding) {
-                    const binding = this.root.keyMapper.getBinding(keybinding);
-                    binding.add(() => {
-                        if (visible()) {
-                            handler();
-                        }
-                    });
-                }
-
-                if (visible) {
-                    this.visibilityToUpdate.push({
-                        button,
-                        condition: visible,
-                        domAttach: new DynamicDomAttach(this.root, button),
-                    });
-                }
-
-                if (badge) {
-                    const badgeElement = makeDiv(button, null, ["badge"]);
-                    this.badgesToUpdate.push({
-                        badge,
-                        lastRenderAmount: 0,
-                        button,
-                        badgeElement,
-                        notification,
-                        condition: visible,
-                        showBadgeNumber,
-                    });
-                }
+            if (keybinding) {
+                const binding = this.root.keyMapper.getBinding(keybinding);
+                binding.add(() => {
+                    if (visible()) {
+                        handler();
+                    }
+                });
             }
-        );
+
+            if (visible) {
+                this.visibilityToUpdate.push({
+                    button,
+                    condition: visible,
+                    domAttach: new DynamicDomAttach(this.root, button),
+                });
+            }
+
+            if (badge) {
+                const badgeElement = makeDiv(button, null, ["badge"]);
+                this.badgesToUpdate.push({
+                    badge,
+                    lastRenderAmount: 0,
+                    button,
+                    badgeElement,
+                    notification,
+                    condition: visible,
+                });
+            }
+        });
 
         this.saveButton = makeDiv(this.element, null, ["button", "save", "animEven"]);
         this.settingsButton = makeDiv(this.element, null, ["button", "settings"]);
@@ -122,15 +115,8 @@ export const GameMenuExtension = ({ $old }) => ({
 
         // Check for notifications and badges
         for (let i = 0; i < this.badgesToUpdate.length; ++i) {
-            const {
-                badge,
-                button,
-                badgeElement,
-                lastRenderAmount,
-                notification,
-                condition,
-                showBadgeNumber,
-            } = this.badgesToUpdate[i];
+            const { badge, button, badgeElement, lastRenderAmount, notification, condition } =
+                this.badgesToUpdate[i];
 
             if (condition && !condition()) {
                 // Do not show notifications for invisible buttons
@@ -140,7 +126,7 @@ export const GameMenuExtension = ({ $old }) => ({
             // Check if the amount shown differs from the one shown last frame
             const amount = badge();
             if (lastRenderAmount !== amount) {
-                if (amount > 0 && showBadgeNumber) {
+                if (amount > 0) {
                     badgeElement.innerText = amount;
                 }
                 // Check if the badge increased, if so play a notification

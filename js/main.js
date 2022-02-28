@@ -61,6 +61,7 @@ import {
     constantSignalEditEditConstantSignal,
     getWireBuildingIsUnlocked,
     hubSystemRedrawHubBaseTexture,
+    parseSignalCode,
 } from "./methodOverrides";
 import { MetaCutterBuilding } from "shapez/game/buildings/cutter";
 import {
@@ -177,6 +178,12 @@ class ModImpl extends Mod {
             //@ts-ignore this works
             constantSignalEditEditConstantSignal
         );
+        this.modInterface.replaceMethod(
+            HUDConstantSignalEdit,
+            "parseSignalCode",
+            //@ts-ignore this works
+            parseSignalCode
+        );
     }
 
     addSmartTunnel() {
@@ -278,19 +285,6 @@ class ModImpl extends Mod {
             if (element.constructor.name === name) {
                 element["secondaryBuildings"].unshift(MetaBeltCrossingBuilding, MetaHyperlinkBuilding);
                 element["secondaryBuildings"].push(MetaShapeCombinerBuilding, MetaShapeCompressorBuilding);
-
-                //element["primaryBuildings"] = [
-                //    MetaBeltBuilding,
-                //    MetaBalancerBuilding,
-                //    MetaUndergroundBeltBuilding,
-                //    MetaMinerBuilding,
-                //    MetaCutterBuilding,
-                //    MetaRotaterBuilding,
-                //    MetaStackerBuilding,
-                //    MetaMixerBuilding,
-                //    MetaPainterBuilding,
-                //    MetaTrashBuilding,
-                //];
             }
         });
     }
