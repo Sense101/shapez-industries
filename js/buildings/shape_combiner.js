@@ -133,8 +133,9 @@ export class MetaShapeCombinerBuilding extends ModMetaBuilding {
     setupEntityComponents(entity) {
         entity.addComponent(
             new ItemProcessorComponent({
-                processorType: "shape_combiner",
+                processorType: shapeCombinerProcessorType,
                 inputsPerCharge: 2,
+                processingRequirement: shapeCombinerProcessorType,
             })
         );
 
@@ -284,6 +285,43 @@ function getShapeCombinerSpeed(root) {
 export function registerShapeCombinerProcessorType(modInterface) {
     MOD_ITEM_PROCESSOR_HANDLERS[shapeCombinerProcessorType] = process_SHAPE_COMBINER;
     MOD_ITEM_PROCESSOR_SPEEDS[shapeCombinerProcessorType] = root => getShapeCombinerSpeed(root);
+}
+
+// ---------------------------------- //
+
+/**
+ * @param {ModInterface} modInterface
+ */
+export function addShapeCombinerProcessRequirement(modInterface) {
+    modInterface.replaceMethod(
+        ItemProcessorSystem,
+        "checkRequirements",
+        function ($original, [entity, item, slotIndex]) {
+            const processorComp = entity.components.ItemProcessor;
+            if (processorComp.processingRequirement == shapeCombinerProcessorType) {
+                const shapeItem = /** @type {ShapeItem} */ (item);
+                const layers = shapeItem.definition.layers;
+                for (let i = 0; i < layers.length; i++) {
+                    const layer = layers[i];
+                    for (let j = 0; j < layer.length; j++) {
+                        if (layer[j] && (layer[j].linkedBefore || layer.linkedAfter)) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+            return $original(entity, item, slotIndex);
+        }
+    );
+    modInterface.replaceMethod(ItemProcessorSystem, "canProcess", function ($original, [entity]) {
+        const processorComp = entity.components.ItemProcessor;
+        if (processorComp.processingRequirement == shapeCombinerProcessorType) {
+            return processorComp.inputCount >= 2;
+        }
+        return $original(entity);
+    });
 }
 
 // -------------------------------------------------------- //

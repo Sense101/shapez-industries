@@ -19,6 +19,7 @@ import { MetaBeltCrossingBuilding } from "./buildings/belt_crossing";
 import { addDeepMinerMultiplier, addNewMinerVariants, MinerExtension } from "./extensions/miner_extension";
 import {
     addCombinedShapeDefinitions,
+    addShapeCombinerProcessRequirement,
     MetaShapeCombinerBuilding,
     registerShapeCombinerProcessorType,
 } from "./buildings/shape_combiner";
@@ -184,6 +185,7 @@ class ModImpl extends Mod {
             //@ts-ignore this works
             parseSignalCode
         );
+        addShapeCombinerProcessRequirement(this.modInterface);
     }
 
     addSmartTunnel() {
@@ -191,7 +193,7 @@ class ModImpl extends Mod {
         this.modInterface.registerGameSystem({
             id: "smartUndergroundBelt",
             systemClass: SmartUnderGroundBeltSystem,
-            before: "itemAcceptor",
+            before: "end",
         });
         this.modInterface.extendClass(MetaUndergroundBeltBuilding, UndergroundBeltExtension);
         addNewUndergroundBeltVariants(this.modInterface);

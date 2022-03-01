@@ -59,6 +59,16 @@ export class SmartUnderGroundBeltSystem extends GameSystemWithFilter {
                 }
 
                 const originalRotationVariant = smartUndergroundBeltComp.rotationVariant;
+                const type = originalRotationVariant % 2;
+
+                if (type == 1) {
+                    // it's an output
+                    this.root.systemMgr.systems.itemEjector.recomputeSingleEntityCache(targetEntity);
+                    const ejectorComp = targetEntity.components.ItemEjector;
+                    if (ejectorComp.slots[0].cachedTargetEntity) {
+                        continue;
+                    }
+                }
 
                 const { rotationVariant } =
                     metaUndergroundBelt.computeOptimalDirectionAndRotationVariantAtTile({

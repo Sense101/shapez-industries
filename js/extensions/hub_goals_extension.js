@@ -155,13 +155,13 @@ export const HubGoalsExtension = ({ $old }) => ({
                 ]
             );
         }
-        const pickedSymmetry = rng.choice(symmetries); // pairs of quadrants that must be the same
 
         const randomShape = () => rng.choice(availableShapes);
 
         let anyIsMissingTwo = false;
 
         for (let i = 0; i < layerCount; ++i) {
+            const pickedSymmetry = rng.choice(symmetries); // pairs of quadrants that must be the same
             /** @type {import("./shape_definition_extension").ShapeLayer} */
             const layer = [null, null, null, null];
             const colors = allColors[i];
@@ -175,22 +175,6 @@ export const HubGoalsExtension = ({ $old }) => ({
                         subShape: shape,
                         color: null,
                     };
-                }
-                if (rng.next() > 0.75) {
-                    // link stuff
-                    for (let k = 0; k < group.length; ++k) {
-                        const index = group[k];
-                        const quadBefore = (index + 3) % 4;
-                        const quadAfter = (index + 1) % 4;
-                        if (group.includes(quadBefore) && layer[quadBefore]) {
-                            layer[quadBefore].linkedAfter = true;
-                            layer[index].linkedBefore = true;
-                        }
-                        if (group.includes(quadAfter) && layer[quadAfter]) {
-                            layer[quadAfter].linkedBefore = true;
-                            layer[index].linkedAfter = true;
-                        }
-                    }
                 }
             }
 
@@ -212,28 +196,27 @@ export const HubGoalsExtension = ({ $old }) => ({
                 const group = pickedSymmetry[j];
                 if (rng.next() > 0.75) {
                     // link stuff
-                    const color = layer[group[0]].color;
+                    const color = rng.choice(colorWheel);
                     for (let k = 0; k < group.length; ++k) {
                         const index = group[k];
+
+                        if (!layer[index]) {
+                            continue;
+                        }
+                        layer[index].color = color;
+
                         const quadBefore = (index + 3) % 4;
                         const quadAfter = (index + 1) % 4;
-                        if (group.includes(quadBefore) && layer[quadBefore]) {
-                            layer[quadBefore].linkedAfter = true;
-                            layer[index].linkedBefore = true;
-                        }
-                        if (group.includes(quadAfter) && layer[quadAfter]) {
-                            layer[quadAfter].linkedBefore = true;
-                            layer[index].linkedAfter = true;
-                        }
+                        const linkedBefore = group.includes(quadBefore) && !!layer[quadBefore];
+                        layer[index].linkedBefore = linkedBefore;
 
-                        if (layer[index]) {
-                            layer[index].color = color;
-                        }
+                        const linkedAfter = group.includes(quadAfter) && !!layer[quadAfter];
+                        layer[index].linkedAfter = linkedAfter;
                     }
                 }
             }
 
-            if (level > 100 && rng.next() > 0.8) {
+            if (level > 100 && rng.next() > 0.9) {
                 layer[rng.nextIntRange(0, 4)] = null;
             }
 

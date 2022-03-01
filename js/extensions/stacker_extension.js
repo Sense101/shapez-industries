@@ -13,7 +13,7 @@ import { T } from "shapez/translations";
 import { newHubGoalRewards } from "../new_hub_goals";
 
 export const quadStackerVariant = "quad";
-const shapeCombinerProcessorType = "stacker-quad";
+const quadStackerProcessorType = "stacker-quad";
 
 export const StackerExtension = ({ $old }) => ({
     getPreviewSprite(rotationVariant, variant) {
@@ -52,8 +52,8 @@ export const StackerExtension = ({ $old }) => ({
 
         const quad = variant == quadStackerVariant;
         if (quad) {
-            processorComp.type = shapeCombinerProcessorType;
-            processorComp.processingRequirement = shapeCombinerProcessorType;
+            processorComp.type = quadStackerProcessorType;
+            processorComp.processingRequirement = quadStackerProcessorType;
             acceptorComp.setSlots([
                 {
                     pos: new Vector(0, 0),
@@ -104,14 +104,14 @@ export const StackerExtension = ({ $old }) => ({
 export function addQuadStackerProcessRequirement(modInterface) {
     modInterface.replaceMethod(ItemProcessorSystem, "canProcess", function ($original, [entity]) {
         const processorComp = entity.components.ItemProcessor;
-        if (processorComp.processingRequirement == shapeCombinerProcessorType) {
+        if (processorComp.processingRequirement == quadStackerProcessorType) {
             // First slot is the shape, so if it's not there we can't do anything
             const baseItem = /** @type {ShapeItem} */ (processorComp.inputSlots.get(0));
             if (!baseItem) {
                 return false;
             }
 
-            for (let i = 1; i < 3; i++) {
+            for (let i = 1; i < 4; i++) {
                 const item = /** @type {ShapeItem} */ (processorComp.inputSlots.get(i));
                 if (item) {
                     return true;
@@ -159,8 +159,8 @@ function process_STACKER_QUAD(payload) {
  * @param {ModInterface} modInterface
  */
 export function addQuadStackerProcessorType(modInterface) {
-    MOD_ITEM_PROCESSOR_HANDLERS[shapeCombinerProcessorType] = process_STACKER_QUAD;
-    MOD_ITEM_PROCESSOR_SPEEDS[shapeCombinerProcessorType] = root =>
+    MOD_ITEM_PROCESSOR_HANDLERS[quadStackerProcessorType] = process_STACKER_QUAD;
+    MOD_ITEM_PROCESSOR_SPEEDS[quadStackerProcessorType] = root =>
         root.hubGoals.getProcessorBaseSpeed(enumItemProcessorTypes.stacker);
 }
 
