@@ -1,14 +1,17 @@
 import { MODS } from "shapez/mods/modloader";
 import { T } from "shapez/translations";
 
+const shapezIndustriesName = "Shapez Industries";
+
 export const MainMenuExtension = ({ $old }) => ({
     onPlayButtonClicked() {
         this.app.analytics.trackUiClick("startgame");
 
         const signals = this.dialogs.showInfo(
             "New Shapez Industries Save",
-            "Shapez Industries is designed to be played after you have reached freeplay in the base game, as the mod assumes you already know the base mechanics.<br><br>\
-            If you've not finished the base game, I advise you play that first.",
+            "Shapez Industries is designed to be played with a new save, but as the mod assumes you already know the basic mechanics, I advise you finish the base game first.<br><br>\
+            Note that this is a complete revamp of the shapez.io experience,\
+            using other mods will either break the game, or ruin the experience!",
             ["cancel:bad", "continue:good"]
         );
 
@@ -25,6 +28,9 @@ export const MainMenuExtension = ({ $old }) => ({
         if (difference.missing.length === 0 && difference.extra.length === 0) {
             return Promise.resolve();
         }
+        const upgradingSave =
+            difference.missing.find(m => m.name == shapezIndustriesName) &&
+            difference.extra.find(m => m.name == shapezIndustriesName);
 
         let dialogHtml = T.dialogs.modsDifference.desc;
 
@@ -40,10 +46,24 @@ export const MainMenuExtension = ({ $old }) => ({
                 </button>
             </div>
             `;
-            if (
-                mod.name == "Shapez Industries" &&
-                !difference.missing.find(m => m.name == "Shapez Industries")
-            ) {
+            if (mod.name == shapezIndustriesName) {
+                if (upgradingSave) {
+                    return `
+                        <div class="dialogModsMod">
+                            <div class="name">${mod.name}</div>
+                            <div class="version" style="display:inline-block;background:green;border-radius:2px;color:white;margin-right:5px;text-align:center;padding:2px;">
+                                ${T.mods.version} 
+                                ${mod.version}
+                                - updating is safe!
+                            </div>
+                            <button class="website styledButton" onclick="window.open('${mod.website.replace(
+                                /"'/,
+                                ""
+                            )}')">${T.mods.modWebsite}
+                            </button>
+                        </div>
+                    `;
+                }
                 html += `
                         <div style="background:red;border-radius:2px;color:white;padding:6px;">
                             WARNING: Shapez Industries is NOT designed to be added to existing savegames. Proceed at your own risk. I don't know what will happen and I don't care. <br><br>

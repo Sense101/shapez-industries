@@ -3,7 +3,7 @@ import { enumDirection, Vector } from "shapez/core/vector";
 import { enumColorMixingResults, enumColors } from "shapez/game/colors";
 import { ItemAcceptorComponent } from "shapez/game/components/item_acceptor";
 import { ItemEjectorComponent } from "shapez/game/components/item_ejector";
-import { enumItemProcessorTypes, ItemProcessorComponent } from "shapez/game/components/item_processor";
+import { ItemProcessorComponent } from "shapez/game/components/item_processor";
 import { Entity } from "shapez/game/entity";
 import { defaultBuildingVariant, MetaBuilding } from "shapez/game/meta_building";
 import { GameRoot } from "shapez/game/root";

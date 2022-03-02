@@ -849,29 +849,3 @@ export function addHyperlinkSlotPreviews(modInterface) {
         }
     );
 }
-
-// -------------------------------------- //
-
-/**
- * @param {ModInterface} modInterface
- */
-export function addHyperlinkAcceptorsToHub(modInterface) {
-    modInterface.replaceMethod(
-        MetaHubBuilding,
-        "setupEntityComponents",
-        function ($original, [entity, root]) {
-            const slots = [];
-            for (let i = 0; i < 4; ++i) {
-                slots.push(
-                    { pos: new Vector(i, 0), direction: enumDirection.top },
-                    { pos: new Vector(i, 3), direction: enumDirection.bottom },
-                    { pos: new Vector(0, i), direction: enumDirection.left },
-                    { pos: new Vector(3, i), direction: enumDirection.right }
-                );
-            }
-            entity.addComponent(new HyperlinkAcceptorComponent({ slots }));
-
-            $original(entity, root);
-        }
-    );
-}

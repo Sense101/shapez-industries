@@ -5,6 +5,7 @@ import { GameSystemWithFilter } from "shapez/game/game_system_with_filter";
 import { MetaUndergroundBeltBuilding } from "shapez/game/buildings/underground_belt";
 import { smartUndergroundBeltVariant } from "../extensions/underground_belt_extension";
 import { SmartUndergroundBeltComponent } from "../components/smart_underground_belt";
+import { enumUndergroundBeltMode } from "shapez/game/components/underground_belt";
 
 /**
  * Manages all smart Balancers
@@ -28,7 +29,6 @@ export class SmartUnderGroundBeltSystem extends GameSystemWithFilter {
             return;
         }
 
-        /** @type {MetaUndergroundBeltBuilding} */
         const metaUndergroundBelt = gMetaBuildingRegistry.findByClass(MetaUndergroundBeltBuilding);
         // Compute affected area
         const originalRect = staticComp.getTileSpaceBounds();
@@ -59,10 +59,10 @@ export class SmartUnderGroundBeltSystem extends GameSystemWithFilter {
                 }
 
                 const originalRotationVariant = smartUndergroundBeltComp.rotationVariant;
-                const type = originalRotationVariant % 2;
+                const mode = Object.values(enumUndergroundBeltMode)[originalRotationVariant % 2];
 
-                if (type == 1) {
-                    // it's an output
+                if (mode == enumUndergroundBeltMode.receiver) {
+                    // it's a reciever
                     this.root.systemMgr.systems.itemEjector.recomputeSingleEntityCache(targetEntity);
                     const ejectorComp = targetEntity.components.ItemEjector;
                     if (ejectorComp.slots[0].cachedTargetEntity) {
@@ -70,14 +70,13 @@ export class SmartUnderGroundBeltSystem extends GameSystemWithFilter {
                     }
                 }
 
-                const { rotationVariant } =
-                    metaUndergroundBelt.computeOptimalDirectionAndRotationVariantAtTile({
-                        root: this.root,
-                        tile: new Vector(x, y),
-                        rotation: staticComp.originalRotation,
-                        variant: smartUndergroundBeltVariant,
-                        layer: targetEntity.layer,
-                    });
+                const rotationVariant = metaUndergroundBelt.computeRotationVariantForSmart(
+                    this.root,
+                    new Vector(x, y),
+                    staticComp.originalRotation,
+                    mode,
+                    originalRotationVariant
+                );
 
                 if (rotationVariant != originalRotationVariant) {
                     smartUndergroundBeltComp.rotationVariant = rotationVariant;

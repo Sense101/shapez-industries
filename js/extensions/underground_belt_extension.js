@@ -346,9 +346,10 @@ export const UndergroundBeltExtension = ({ $old }) => ({
      * @param {number} rotation
      * @param {Entity} entity
      * @param {string} mode
+     * @param {number|null=} originalRotationVariant
      * @returns {number} the rotation variant
      */
-    computeRotationVariantForSmart(root, tile, rotation, mode) {
+    computeRotationVariantForSmart(root, tile, rotation, mode, originalRotationVariant = null) {
         const topDirection = enumAngleToDirection[rotation];
         const rightDirection = enumAngleToDirection[(rotation + 90) % 360];
         const leftDirection = enumAngleToDirection[(rotation + 270) % 360];
@@ -384,6 +385,16 @@ export const UndergroundBeltExtension = ({ $old }) => ({
                     center = true;
                 }
             }
+        }
+
+        if (
+            originalRotationVariant != null &&
+            ((originalRotationVariant == 0 && center) ||
+                (originalRotationVariant == 2 && left) ||
+                (originalRotationVariant == 4 && right))
+        ) {
+            // we can stay the same
+            return originalRotationVariant;
         }
 
         // now actually choose what to return

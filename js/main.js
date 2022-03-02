@@ -58,12 +58,6 @@ import {
     registerShapeCompressorProcessorType,
 } from "./buildings/shape_compressor";
 import { MainMenuState } from "shapez/states/main_menu";
-import {
-    constantSignalEditEditConstantSignal,
-    getWireBuildingIsUnlocked,
-    hubSystemRedrawHubBaseTexture,
-    parseSignalCode,
-} from "./methodOverrides";
 import { MetaCutterBuilding } from "shapez/game/buildings/cutter";
 import {
     addLaserCutterProcessorType,
@@ -72,7 +66,6 @@ import {
 } from "./extensions/cutter_extension";
 import { HUDConstantSignalEdit } from "shapez/game/hud/parts/constant_signal_edit";
 import {
-    addHyperlinkAcceptorsToHub,
     addHyperlinkOutputCheck,
     addHyperlinkSlotPreviews,
     MetaHyperlinkBuilding,
@@ -103,10 +96,11 @@ import { HUDResearch, researchVariants } from "./hud/research";
 import { HubGoals } from "shapez/game/hub_goals";
 import { HubGoalsExtension } from "./extensions/hub_goals_extension";
 import { MainMenuExtension } from "./extensions/main_menu_extension";
-import { MetaBeltBuilding } from "shapez/game/buildings/belt";
-import { MetaRotaterBuilding } from "shapez/game/buildings/rotater";
-import { MetaMixerBuilding } from "shapez/game/buildings/mixer";
-import { MetaTrashBuilding } from "shapez/game/buildings/trash";
+import { MetaHubBuilding } from "shapez/game/buildings/hub";
+import { HubExtension, HubSystemExtension } from "./extensions/hub_extension";
+import { ConstantSignalEditExtension } from "./extensions/constant_signal_edit_extension";
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class ModImpl extends Mod {
     init() {
@@ -120,29 +114,34 @@ class ModImpl extends Mod {
         this.addQuadStacker();
         this.addLaserCutter();
         this.addHyperlink();
-
         this.addShapeCompressor();
-        this.replaceShapeLayerDraw();
+        this.changeQuadPainter();
 
-        // add new features
-        this.addHiddenSlotsComponent();
-        this.addLoadSaveWarning();
-        this.addTieredBlueprints();
-        this.fixHubLevelScaling();
+        // Add functionality of new buildings
         this.addNewBuildingsToToolbar();
         this.correctWireBuildingUnlocks();
+        this.replaceShapeLayerDraw();
 
+        // Add new features
+        this.addHiddenSlotsComponent();
+        this.addTieredBlueprints();
         this.addMaxUpgradeLevel();
-        this.turnOffTutorials();
         this.extendGameMenu();
         this.addResearch();
         this.saveGainedRewards();
-        this.changeQuadPainterDescription();
 
+        this.addLoadSaveWarning();
+        this.turnOffTutorials();
+        // replace gaame mode and hub goals
         registerNewGoalTranslations(this.modInterface);
         replaceGoalExplanations(this.modInterface);
         extendGameMode(this.modInterface);
+
+        // temp, all this neater stuff
         this.modInterface.extendClass(HubGoals, HubGoalsExtension);
+        this.modInterface.extendClass(MetaHubBuilding, HubExtension);
+        this.modInterface.extendClass(HubSystem, HubSystemExtension);
+        this.modInterface.extendClass(HUDConstantSignalEdit, ConstantSignalEditExtension);
     }
 
     addHiddenSlotsComponent() {
@@ -173,18 +172,6 @@ class ModImpl extends Mod {
         this.modInterface.registerNewBuilding({ metaClass: MetaShapeCombinerBuilding });
         addCombinedShapeDefinitions(this.modInterface);
         registerShapeCombinerProcessorType(this.modInterface);
-        this.modInterface.replaceMethod(
-            HUDConstantSignalEdit,
-            "editConstantSignal",
-            //@ts-ignore this works
-            constantSignalEditEditConstantSignal
-        );
-        this.modInterface.replaceMethod(
-            HUDConstantSignalEdit,
-            "parseSignalCode",
-            //@ts-ignore this works
-            parseSignalCode
-        );
         addShapeCombinerProcessRequirement(this.modInterface);
     }
 
@@ -268,16 +255,6 @@ class ModImpl extends Mod {
         });
         addHyperlinkOutputCheck(this.modInterface);
         addHyperlinkSlotPreviews(this.modInterface);
-        addHyperlinkAcceptorsToHub(this.modInterface);
-    }
-
-    fixHubLevelScaling() {
-        this.modInterface.replaceMethod(
-            HubSystem,
-            "redrawHubBaseTexture",
-            //@ts-ignore this works
-            hubSystemRedrawHubBaseTexture
-        );
     }
 
     addNewBuildingsToToolbar() {
@@ -291,64 +268,23 @@ class ModImpl extends Mod {
         });
     }
 
-    // a bit messy, but it works
     correctWireBuildingUnlocks() {
-        this.modInterface.replaceMethod(
+        const buildingsToReplace = [
             MetaConstantSignalBuilding,
-            "getIsUnlocked",
-            //@ts-ignore this works
-            getWireBuildingIsUnlocked
-        );
-        this.modInterface.replaceMethod(
             MetaLogicGateBuilding,
-            "getIsUnlocked",
-            //@ts-ignore this works
-            getWireBuildingIsUnlocked
-        );
-        this.modInterface.replaceMethod(
             MetaVirtualProcessorBuilding,
-            "getIsUnlocked",
-            //@ts-ignore this works
-            getWireBuildingIsUnlocked
-        );
-        this.modInterface.replaceMethod(
             MetaAnalyzerBuilding,
-            "getIsUnlocked",
-            //@ts-ignore this works
-            getWireBuildingIsUnlocked
-        );
-        this.modInterface.replaceMethod(
             MetaComparatorBuilding,
-            "getIsUnlocked",
-            //@ts-ignore this works
-            getWireBuildingIsUnlocked
-        );
-        this.modInterface.replaceMethod(
             MetaTransistorBuilding,
-            "getIsUnlocked",
-            //@ts-ignore this works
-            getWireBuildingIsUnlocked
-        );
-        this.modInterface.replaceMethod(
             MetaReaderBuilding,
-            "getIsUnlocked",
-            //@ts-ignore this works
-            getWireBuildingIsUnlocked
-        );
-        this.modInterface.replaceMethod(
-            MetaPainterBuilding,
-            "getAvailableVariants",
-            function ($original, [root]) {
-                let variants = [defaultBuildingVariant, enumPainterVariants.mirrored];
-                if (root.hubGoals.isRewardUnlocked(enumHubGoalRewards.reward_painter_double)) {
-                    variants.push(enumPainterVariants.double);
-                }
-                if (root.hubGoals.isRewardUnlocked(newHubGoalRewards.reward_quad_painter)) {
-                    variants.push(enumPainterVariants.quad);
-                }
-                return variants;
-            }
-        );
+        ];
+
+        for (let i = 0; i < buildingsToReplace.length; i++) {
+            const building = buildingsToReplace[i];
+            this.modInterface.replaceMethod(building, "getIsUnlocked", function ($original, [root]) {
+                return root.hubGoals.isRewardUnlocked(enumHubGoalRewards.reward_wires_painter_and_levers);
+            });
+        }
     }
 
     addMaxUpgradeLevel() {
@@ -420,13 +356,27 @@ class ModImpl extends Mod {
         });
     }
 
-    changeQuadPainterDescription() {
+    changeQuadPainter() {
+        this.modInterface.replaceMethod(
+            MetaPainterBuilding,
+            "getAvailableVariants",
+            function ($original, [root]) {
+                let variants = [defaultBuildingVariant, enumPainterVariants.mirrored];
+                if (root.hubGoals.isRewardUnlocked(enumHubGoalRewards.reward_painter_double)) {
+                    variants.push(enumPainterVariants.double);
+                }
+                if (root.hubGoals.isRewardUnlocked(newHubGoalRewards.reward_quad_painter)) {
+                    variants.push(enumPainterVariants.quad);
+                }
+                return variants;
+            }
+        );
         this.modInterface.registerTranslations("en", {
             buildings: {
                 painter: {
                     quad: {
                         description:
-                            "Allows you to color each layer of a shape individually. Only slots with a <strong>truthy signal</strong> on the wires layer will be painted!",
+                            "Allows you to color each <strong>LAYER</strong> of a shape individually. Only slots with a <strong>truthy signal</strong> on the wires layer will be painted!",
                     },
                 },
             },
