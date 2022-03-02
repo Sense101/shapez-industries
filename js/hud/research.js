@@ -272,7 +272,9 @@ export class HUDResearch extends BaseHUDPart {
                 continue;
             }
 
-            handle.elemDescription.innerText = available ? desc : "LOCKED";
+            handle.elemDescription.innerText = available
+                ? desc
+                : `LOCKED (Tier ${getRomanNumber(tier)} Required)`;
 
             if (!available) {
                 // we can't research this yet

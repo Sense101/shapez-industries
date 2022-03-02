@@ -33,118 +33,7 @@ $tutorial_images: (
     }
 }
 
-/* Blueprint placer */
-#ingame_HUD_BlueprintPlacer {
-    .costContainer {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center;
-        justify-content: center;
-
-        .tierContainer {
-            &.hidden {
-                display: none;
-            }
-
-            &:not(.hidden) {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                margin: 0 5px;
-
-                .tierCost {
-                    line-height: 30px;
-                    &.canAfford {
-                        color: white;
-                    }
-                    &:not(.canAfford) {
-                        color: rgb(255, 97, 128);
-                    }
-                }
-
-                canvas,
-                .lockedSprite {
-                    margin-left: 0px;
-                    width: 30px;
-                    height: 30px;
-                    text-align: center;
-                    font-size: 18px;
-                }
-                .lockedSprite {
-                    color: rgb(255, 97, 128);
-                }
-
-                &.locked {
-                    canvas {
-                        display: none;
-                    }
-                }
-                &:not(.locked) {
-                    .lockedSprite {
-                        display: none;
-                    }
-                }
-            }
-        }
-    }
-}
-
-/* Toolbar */
-#ingame_HUD_BuildingsToolbar {
-    .secondary .building {
-        &:nth-of-type(2) {
-            margin-right: 20px;
-        }
-        &:nth-last-of-type(2) {
-            margin-left: 20px;
-        }
-    }
-}
-
-/* Game Menu */
-#ingame_HUD_GameMenu {
-    > button,
-    > .button {
-        font-size: 6px !important;
-        &.research {
-            grid-column: 1;
-            & {
-                /* @load-async */
-                background-image: url("../res/ui/research.png");
-            }
-        }
-
-        &.shop {
-            grid-column: 2;
-        }
-
-        &.stats {
-            grid-column: 3;
-        }
-
-        &.save {
-            grid-column: 4;
-        }
-
-        &.settings {
-            grid-column: 5;
-        }
-
-        &.hasBadge {
-            &.research {
-                filter: none;
-                opacity: 0.9;
-
-                & {
-                    /* @load-async */
-                    background-image: url("../res/ui/research_active.png");
-                }
-            }
-        }
-    }
-}
-
-/* Research */
+/* MIXINS */
 
 @mixin DarkThemeOverride {
     @at-root html[data-theme="dark"] &,
@@ -223,8 +112,137 @@ $tutorial_images: (
     animation: $animName $duration !important;
 }
 
+/* Blueprint placer */
+#ingame_HUD_BlueprintPlacer {
+    .costContainer {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center;
+        justify-content: center;
+
+        .tierContainer {
+            &.hidden {
+                display: none;
+            }
+
+            &:not(.hidden) {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 0 5px;
+
+                .tierCost {
+                    @include S(line-height, 30px);
+                    &.canAfford {
+                        color: white;
+                    }
+                    &:not(.canAfford) {
+                        color: rgb(255, 97, 128);
+                    }
+                }
+
+                canvas,
+                .lockedSprite {
+                    margin-left: 0px;
+                    @include S(width, 30px);
+                    @include S(height, 30px);
+                    text-align: center;
+                    @include S(font-size, 18px);
+                }
+                .lockedSprite {
+                    color: rgb(255, 97, 128);
+                }
+
+                &.locked {
+                    canvas {
+                        display: none;
+                    }
+                }
+                &:not(.locked) {
+                    .lockedSprite {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* Toolbar */
+#ingame_HUD_BuildingsToolbar {
+    .secondary .building {
+        &:nth-of-type(2) {
+            margin-right: 20px;
+        }
+        &:nth-last-of-type(2) {
+            margin-left: 20px;
+        }
+    }
+}
+
+/* Game Menu */
+#ingame_HUD_GameMenu {
+    > button,
+    > .button {
+        font-size: 6px !important;
+        &.research {
+            grid-column: 1;
+            & {
+                /* @load-async */
+                background-image: url("../res/ui/research.png");
+            }
+        }
+
+        &.shop {
+            grid-column: 2;
+        }
+
+        &.stats {
+            grid-column: 3;
+        }
+
+        &.save {
+            grid-column: 4;
+        }
+
+        &.settings {
+            grid-column: 5;
+        }
+
+        &.hasBadge {
+            &.research {
+                filter: none;
+                opacity: 0.9;
+
+                & {
+                    /* @load-async */
+                    background-image: url("../res/ui/research_active.png");
+                }
+            }
+        }
+    }
+}
+
+/* Research */
+
 $colorGreenBright: #66bb6a;
 $darkModeControlsBackground: darken(#535866, 5);
+
+#ingame_HUD_Shop {
+    .upgrade {
+        .maxTierPopup {
+            position: relative;
+            @include S(bottom, -45px);
+            left: 0;
+            @include S(font-size, 10px);
+        }
+        &:not(.maxLevel) {
+            .maxTierPopup {
+                display: none;
+            }
+        }
+    }
+}
 
 #ingame_HUD_Research {
     z-index: 400;

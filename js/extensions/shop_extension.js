@@ -56,6 +56,7 @@ export const HUDShopExtension = ({ $old }) => ({
             // Description
             handle.elemDescription = makeDiv(handle.elem, null, ["description"], "??");
             handle.elemRequirements = makeDiv(handle.elem, null, ["requirements"]);
+            handle.maxTierPopup = makeDiv(handle.elem, null, ["maxTierPopup"]);
 
             // Buy button
             handle.buyButton = document.createElement("button");
@@ -100,14 +101,17 @@ export const HUDShopExtension = ({ $old }) => ({
             // Cleanup
             handle.requireIndexToElement = [];
 
-            handle.elem.classList.toggle("maxLevel", !tierHandle);
-
-            if (!tierHandle || currentTier >= this.maxUpgradeTier) {
+            const maxLevel = !tierHandle || currentTier >= this.maxUpgradeTier;
+            handle.elem.classList.toggle("maxLevel", maxLevel);
+            if (maxLevel) {
                 // Max level
                 handle.elemDescription.innerText = T.ingame.shop.maximumLevel.replace(
                     "<currentMult>",
                     formatBigNumber(currentTierMultiplier)
                 );
+                handle.maxTierPopup.innerText = `Unlock upgrades tier ${
+                    this.maxUpgradeTier + 1
+                } from a hub level to progress further!`;
             } else {
                 // Set description
                 handle.elemDescription.innerText = T.shopUpgrades[upgradeId].description
@@ -115,7 +119,7 @@ export const HUDShopExtension = ({ $old }) => ({
                     .replace("<newMult>", formatBigNumber(currentTierMultiplier + tierHandle.improvement));
             }
 
-            tierHandle.required.forEach(({ shape, amount }) => {
+            for (const { shape, amount } of tierHandle.required) {
                 const container = makeDiv(handle.elemRequirements, null, ["requirement"]);
 
                 const shapeDef = this.root.shapeDefinitionMgr.getShapeFromShortKey(shape);
@@ -179,7 +183,7 @@ export const HUDShopExtension = ({ $old }) => ({
                     pinDetector,
                     infoDetector,
                 });
-            });
+            }
         }
     },
 

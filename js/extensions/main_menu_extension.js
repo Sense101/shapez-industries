@@ -7,7 +7,7 @@ export const MainMenuExtension = ({ $old }) => ({
     onPlayButtonClicked() {
         this.app.analytics.trackUiClick("startgame");
 
-        const signals = this.dialogs.showInfo(
+        const signals = this.dialogs.showWarning(
             "New Shapez Industries Save",
             "Shapez Industries is designed to be played with a new save, but as the mod assumes you already know the basic mechanics, I advise you finish the base game first.<br><br>\
             Note that this is a complete revamp of the shapez.io experience,\

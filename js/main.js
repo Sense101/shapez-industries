@@ -180,7 +180,7 @@ class ModImpl extends Mod {
         this.modInterface.registerGameSystem({
             id: "smartUndergroundBelt",
             systemClass: SmartUnderGroundBeltSystem,
-            before: "end",
+            before: "itemAcceptor",
         });
         this.modInterface.extendClass(MetaUndergroundBeltBuilding, UndergroundBeltExtension);
         addNewUndergroundBeltVariants(this.modInterface);
