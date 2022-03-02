@@ -51,7 +51,7 @@ export const MainMenuExtension = ({ $old }) => ({
                     return `
                         <div class="dialogModsMod">
                             <div class="name">${mod.name}</div>
-                            <div class="version" style="display:inline-block;background:green;border-radius:2px;color:white;margin-right:5px;text-align:center;padding:2px;">
+                            <div class="version" style="display:inline-block;background:green;border-radius:2px;color:white;margin-right:5px;margin-top:3px;text-align:center;padding:2px;">
                                 ${T.mods.version} 
                                 ${mod.version}
                                 - updating is safe!

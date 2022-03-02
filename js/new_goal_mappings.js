@@ -181,7 +181,10 @@ export function replaceGoalExplanations(modInterface) {
 
         this.element.querySelector("button.close").classList.remove("unlocked");
 
-        this.element.querySelector("button.close").classList.add("unlocked");
+        this.buttonShowTimeout = setTimeout(
+            () => this.element.querySelector("button.close").classList.add("unlocked"),
+            5000
+        );
 
         this.element.querySelector("button.close").innerHTML = isResearch ? "Continue" : "Next Level";
     });
