@@ -8,18 +8,17 @@ import { ItemProcessorComponent } from "shapez/game/components/item_processor";
 import { Entity } from "shapez/game/entity";
 import { MOD_ITEM_PROCESSOR_SPEEDS } from "shapez/game/hub_goals";
 import { ShapeItem } from "shapez/game/items/shape_item";
-import { defaultBuildingVariant } from "shapez/game/meta_building";
+import { defaultBuildingVariant, MetaBuilding } from "shapez/game/meta_building";
 import { GameRoot } from "shapez/game/root";
 import { ShapeDefinition } from "shapez/game/shape_definition";
 import { ItemProcessorSystem, MOD_ITEM_PROCESSOR_HANDLERS } from "shapez/game/systems/item_processor";
 import { ModInterface } from "shapez/mods/mod_interface";
-import { ModMetaBuilding } from "shapez/mods/mod_meta_building";
 import { T } from "shapez/translations";
 import { newHubGoalRewards } from "../new_hub_goals";
 
 const shapeCompressorProcessorType = "shape_compressor";
 
-export class MetaShapeCompressorBuilding extends ModMetaBuilding {
+export class MetaShapeCompressorBuilding extends MetaBuilding {
     constructor() {
         super("shape_compressor");
     }

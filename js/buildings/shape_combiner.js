@@ -5,11 +5,10 @@ import { ItemAcceptorComponent } from "shapez/game/components/item_acceptor";
 import { ItemEjectorComponent } from "shapez/game/components/item_ejector";
 import { enumItemProcessorTypes, ItemProcessorComponent } from "shapez/game/components/item_processor";
 import { Entity } from "shapez/game/entity";
-import { defaultBuildingVariant } from "shapez/game/meta_building";
+import { defaultBuildingVariant, MetaBuilding } from "shapez/game/meta_building";
 import { GameRoot } from "shapez/game/root";
 import { enumSubShape, ShapeDefinition } from "shapez/game/shape_definition";
 import { ModInterface } from "shapez/mods/mod_interface";
-import { ModMetaBuilding } from "shapez/mods/mod_meta_building";
 import { T } from "shapez/translations";
 import { newHubGoalRewards } from "../new_hub_goals";
 import {
@@ -87,7 +86,7 @@ for (const combined in enumCombinedShape) {
 
 const shapeCombinerProcessorType = "shape_combiner";
 
-export class MetaShapeCombinerBuilding extends ModMetaBuilding {
+export class MetaShapeCombinerBuilding extends MetaBuilding {
     constructor() {
         super("shape_combiner");
     }

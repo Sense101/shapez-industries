@@ -1,7 +1,7 @@
 import { ItemEjectorComponent } from "shapez/game/components/item_ejector";
 import { enumItemProcessorTypes } from "shapez/game/components/item_processor";
 import { Entity } from "shapez/game/entity";
-import { defaultBuildingVariant } from "shapez/game/meta_building";
+import { defaultBuildingVariant, MetaBuilding } from "shapez/game/meta_building";
 import { GameRoot } from "shapez/savegame/savegame";
 import { T } from "shapez/translations";
 import { formatItemsPerSecond, generateMatrixRotations } from "shapez/core/utils";
@@ -10,7 +10,6 @@ import { enumDirection, Vector } from "shapez/core/vector";
 import { ItemAcceptorComponent } from "shapez/game/components/item_acceptor";
 import { newHubGoalRewards } from "../new_hub_goals";
 import { BeltCrossingComponent } from "../components/belt_crossing";
-import { ModMetaBuilding } from "shapez/mods/mod_meta_building";
 
 /** @enum {string} */
 export const enumBeltCrossingVariants = {
@@ -24,7 +23,7 @@ const overlayMatrices = {
     [enumBeltCrossingVariants.switcher]: null,
 };
 
-export class MetaBeltCrossingBuilding extends ModMetaBuilding {
+export class MetaBeltCrossingBuilding extends MetaBuilding {
     constructor() {
         super("belt_crossing");
     }

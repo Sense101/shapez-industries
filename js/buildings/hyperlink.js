@@ -17,11 +17,10 @@ import { ItemEjectorComponent } from "shapez/game/components/item_ejector";
 import { StaticMapEntityComponent } from "shapez/game/components/static_map_entity";
 import { Entity } from "shapez/game/entity";
 import { HUDBuildingPlacer } from "shapez/game/hud/parts/building_placer";
-import { defaultBuildingVariant } from "shapez/game/meta_building";
+import { defaultBuildingVariant, MetaBuilding } from "shapez/game/meta_building";
 import { GameRoot } from "shapez/game/root";
 import { ItemEjectorSystem } from "shapez/game/systems/item_ejector";
 import { ModInterface } from "shapez/mods/mod_interface";
-import { ModMetaBuilding } from "shapez/mods/mod_meta_building";
 import { SOUNDS } from "shapez/platform/sound";
 import { T } from "shapez/translations";
 import { HyperlinkComponent } from "../components/hyperlink";
@@ -44,7 +43,7 @@ export const hyperlinkOverlayMatrices = {
     [enumDirection.right]: generateMatrixRotations([0, 0, 0, 0, 1, 1, 0, 1, 0]),
 };
 
-export class MetaHyperlinkBuilding extends ModMetaBuilding {
+export class MetaHyperlinkBuilding extends MetaBuilding {
     constructor() {
         super("hyperlink");
     }
