@@ -88,19 +88,9 @@ export const HubGoalsExtension = ({ $old }) => ({
 
         const allColors = generateRandomColorSet(rng);
 
-        const colorWheel = [
-            enumColors.red,
-            enumColors.yellow,
-            enumColors.green,
-            enumColors.cyan,
-            enumColors.blue,
-            enumColors.purple,
-            enumColors.red,
-            enumColors.yellow,
-            enumColors.white,
-        ];
-        if (level > 50) {
-            colorWheel.push(enumColors.uncolored);
+        const colorWheel = [...Object.values(enumColors).slice()];
+        if (level <= 50 && colorWheel.includes(enumColors.uncolored)) {
+            colorWheel.splice(colorWheel.indexOf(enumColors.uncolored), 1);
         }
 
         const symmetries = [
@@ -178,10 +168,11 @@ export const HubGoalsExtension = ({ $old }) => ({
                 }
             }
 
-            let availableColors = colorWheel;
+            let availableColors = colorWheel.slice();
 
             for (let j = 0; j < colors.length; ++j) {
                 const group = colors[j];
+                console.log(availableColors);
                 const colorIndex = rng.nextIntRange(0, availableColors.length);
                 for (let k = 0; k < group.length; ++k) {
                     const quad = group[k];
