@@ -6,5 +6,6 @@
     "author": "Sense_101",
     "description": "Everything you thought was missing from shapez.io - New buildings! New shapes! Revamped progression! New mechanics! More new shapes! Better freeplay! And... so much more.",
     "website": "https://shapez.mod.io/shapez-industries",
-    "settings": {}
+    "settings": {},
+    "disabled": false
 }

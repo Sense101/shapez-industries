@@ -292,32 +292,36 @@ export function registerShapeCombinerProcessorType(modInterface) {
  * @param {ModInterface} modInterface
  */
 export function addShapeCombinerProcessRequirement(modInterface) {
-    modInterface.replaceMethod(
-        ItemProcessorSystem,
-        "checkRequirements",
-        function ($original, [entity, item, slotIndex]) {
-            const processorComp = entity.components.ItemProcessor;
-            if (processorComp.processingRequirement == shapeCombinerProcessorType) {
-                const shapeItem = /** @type {ShapeItem} */ (item);
-                const layers = shapeItem.definition.layers;
-                for (let i = 0; i < layers.length; i++) {
-                    const layer = layers[i];
-                    for (let j = 0; j < layer.length; j++) {
-                        if (layer[j] && (layer[j].linkedBefore || layer.linkedAfter)) {
+    modInterface.replaceMethod(ItemProcessorSystem, "canProcess", function ($original, [entity]) {
+        const processorComp = entity.components.ItemProcessor;
+        if (processorComp.processingRequirement == shapeCombinerProcessorType) {
+            if (processorComp.inputCount < 2) {
+                return false;
+            }
+            const shapeItem1 = /** @type {ShapeItem} */ (processorComp.inputSlots.get(0));
+            const shapeItem2 = /** @type {ShapeItem} */ (processorComp.inputSlots.get(1));
+            const layers1 = shapeItem1.definition.layers;
+            const layers2 = shapeItem2.definition.layers;
+            for (let i = 0; i < layers1.length; i++) {
+                const layer1 = layers1[i];
+                const layer2 = layers2[i];
+                if (!(layer1 && layer2)) {
+                    continue;
+                }
+                for (let j = 0; j < layer1.length; j++) {
+                    if (layer1[j] && layer2[j]) {
+                        // both quads exist
+                        if (
+                            layer1[j].linkedBefore ^ layer2[j].linkedBefore ||
+                            layer1[j].linkedAfter ^ layer2[j].linkedAfter
+                        ) {
+                            // non-matching shapes
                             return false;
                         }
                     }
                 }
-
-                return true;
             }
-            return $original(entity, item, slotIndex);
-        }
-    );
-    modInterface.replaceMethod(ItemProcessorSystem, "canProcess", function ($original, [entity]) {
-        const processorComp = entity.components.ItemProcessor;
-        if (processorComp.processingRequirement == shapeCombinerProcessorType) {
-            return processorComp.inputCount >= 2;
+            return true;
         }
         return $original(entity);
     });
