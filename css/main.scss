@@ -231,10 +231,8 @@ $darkModeControlsBackground: darken(#535866, 5);
 #ingame_HUD_Shop {
     .upgrade {
         .maxTierPopup {
-            position: relative;
-            @include S(bottom, -45px);
-            left: 0;
-            @include S(font-size, 10px);
+            @include S(margin-top, 5px);
+            @include S(font-size, 9px);
         }
         &:not(.maxLevel) {
             .maxTierPopup {

@@ -172,7 +172,6 @@ export const HubGoalsExtension = ({ $old }) => ({
 
             for (let j = 0; j < colors.length; ++j) {
                 const group = colors[j];
-                console.log(availableColors);
                 const colorIndex = rng.nextIntRange(0, availableColors.length);
                 for (let k = 0; k < group.length; ++k) {
                     const quad = group[k];

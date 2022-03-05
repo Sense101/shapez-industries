@@ -429,6 +429,8 @@ export function generateLevelDefinitions(limitedVersion = false) {
         },
     ];
 
+    MOD_SIGNALS.modifyLevelDefinitions.dispatch(levelDefinitions);
+
     levelDefinitionsCache[limitedVersion] = levelDefinitions;
 
     return levelDefinitions;
