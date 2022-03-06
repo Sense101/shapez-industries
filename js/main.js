@@ -323,7 +323,7 @@ class ModImpl extends Mod {
     saveGainedRewards() {
         this.signals.gameSerialized.add((root, data) => {
             data.modExtraData["gainedRewards"] = root.hubGoals.gainedRewards;
-            data.modExtraData["maxUpgradeTier"] = root.hud.parts.shop.maxUpgradeTier;
+            data.modExtraData["maxUpgradeTier-2"] = root.hud.parts.shop.maxUpgradeTier;
         });
         this.signals.gameDeserialized.add((root, data) => {
             // turn off hints - hints are bad!
@@ -344,21 +344,31 @@ class ModImpl extends Mod {
                 }
             }
 
-            const maxUpgradeTier = data.modExtraData["maxUpgradeTier"];
+            const maxUpgradeTier = data.modExtraData["maxUpgradeTier-2"];
             const shop = root.hud.parts.shop;
             if (maxUpgradeTier) {
                 shop.maxUpgradeTier = maxUpgradeTier;
             } else {
                 shop.maxUpgradeTier = 1;
+                const levels = root.gameMode.getLevelDefinitions();
+
+                // Compute gained rewards
+                for (let i = 0; i < root.hubGoals.level - 1; ++i) {
+                    if (i < levels.length) {
+                        const reward = levels[i].reward;
+                        if (reward == newHubGoalRewards.reward_upgrade_tier) {
+                            shop.maxUpgradeTier++;
+                        }
+                    }
+                }
+                console.log("Working out shop level for the first time: " + shop.maxUpgradeTier);
             }
 
             for (const upgradeId in shop.upgradeToElements) {
                 const currentTier = root.hubGoals.getUpgradeLevel(upgradeId);
                 if (currentTier > shop.maxUpgradeTier) {
                     root.hubGoals.upgradeLevels[upgradeId] = shop.maxUpgradeTier;
-                    console.log(
-                        "Resetting " + upgradeId + " upgrades to max tier - tier " + shop.maxUpgradeTier
-                    );
+                    console.log("Resetting " + upgradeId + " upgrades to max tier: " + shop.maxUpgradeTier);
                 }
             }
         });
