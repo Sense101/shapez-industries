@@ -132,7 +132,8 @@ class ModImpl extends Mod {
 
         this.addLoadSaveWarning();
         this.turnOffTutorials();
-        // replace gaame mode and hub goals
+
+        // replace game mode and hub goals
         registerNewGoalTranslations(this.modInterface);
         replaceGoalExplanations(this.modInterface);
         extendGameMode(this.modInterface);
@@ -320,12 +321,12 @@ class ModImpl extends Mod {
     }
 
     saveGainedRewards() {
-        this.signals.gameSerialized.add(
-            (/** @type {import("shapez/savegame/savegame").GameRoot} */ root, data) => {
-                data.modExtraData["gainedRewards"] = root.hubGoals.gainedRewards;
-            }
-        );
+        this.signals.gameSerialized.add((root, data) => {
+            data.modExtraData["gainedRewards"] = root.hubGoals.gainedRewards;
+            data.modExtraData["maxUpgradeTier"] = root.hud.parts.shop.maxUpgradeTier;
+        });
         this.signals.gameDeserialized.add((root, data) => {
+            // turn off hints - hints are bad!
             root.app.settings.updateSetting("offerHints", false);
             const gainedRewards = data.modExtraData["gainedRewards"];
             if (gainedRewards) {
@@ -343,7 +344,14 @@ class ModImpl extends Mod {
                 }
             }
 
+            const maxUpgradeTier = data.modExtraData["maxUpgradeTier"];
             const shop = root.hud.parts.shop;
+            if (maxUpgradeTier) {
+                shop.maxUpgradeTier = maxUpgradeTier;
+            } else {
+                shop.maxUpgradeTier = 1;
+            }
+
             for (const upgradeId in shop.upgradeToElements) {
                 const currentTier = root.hubGoals.getUpgradeLevel(upgradeId);
                 if (currentTier > shop.maxUpgradeTier) {

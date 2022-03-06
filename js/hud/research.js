@@ -274,7 +274,7 @@ export class HUDResearch extends BaseHUDPart {
 
             handle.elemDescription.innerText = available
                 ? desc
-                : `LOCKED (Tier ${getRomanNumber(tier)} Required)`;
+                : `LOCKED (Research Tier ${getRomanNumber(tier)} Required)`;
 
             if (!available) {
                 // we can't research this yet
@@ -292,6 +292,34 @@ export class HUDResearch extends BaseHUDPart {
                 const shapeCanvas = shapeDef.generateAsCanvas(80);
                 shapeCanvas.classList.add();
                 container.appendChild(shapeCanvas);
+
+                // pin
+                const pinButton = document.createElement("button");
+                pinButton.classList.add("pin");
+                container.appendChild(pinButton);
+
+                const currentGoalShape = this.root.hubGoals.currentGoal.definition.getHash();
+                if (shape === currentGoalShape) {
+                    pinButton.classList.add("isGoal");
+                } else if (this.root.hud.parts["pinnedShapes"].isShapePinned(shape)) {
+                    pinButton.classList.add("alreadyPinned");
+                }
+
+                const pinDetector = new ClickDetector(pinButton, {
+                    consumeEvents: true,
+                    preventDefault: true,
+                });
+                pinDetector.click.add(() => {
+                    if (this.root.hud.parts["pinnedShapes"].isShapePinned(shape)) {
+                        this.root.hud.signals.shapeUnpinRequested.dispatch(shape);
+                        pinButton.classList.add("unpinned");
+                        pinButton.classList.remove("pinned", "alreadyPinned");
+                    } else {
+                        this.root.hud.signals.shapePinRequested.dispatch(shapeDef);
+                        pinButton.classList.add("pinned");
+                        pinButton.classList.remove("unpinned");
+                    }
+                });
 
                 const progressContainer = makeDiv(container, null, ["amount"]);
                 const progressBar = document.createElement("label");
@@ -317,6 +345,7 @@ export class HUDResearch extends BaseHUDPart {
                     progressBar,
                     definition: shapeDef,
                     required: amounts[i],
+                    pinDetector,
                     infoDetector,
                 });
             }
@@ -370,6 +399,7 @@ export class HUDResearch extends BaseHUDPart {
             for (let i = 0; i < handle.requireIndexToElement.length; ++i) {
                 const requiredHandle = handle.requireIndexToElement[i];
                 requiredHandle.container.remove();
+                requiredHandle.pinDetector.cleanup();
                 if (requiredHandle.infoDetector) {
                     requiredHandle.infoDetector.cleanup();
                 }

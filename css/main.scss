@@ -400,6 +400,90 @@ $darkModeControlsBackground: darken(#535866, 5);
                     }
                 }
             }
+            button.pin {
+                & {
+                    /* @load-async */
+                    background: url("../res/ui/icons/pin.png") center center / 95% no-repeat;
+                }
+
+                @include S(width, 20px);
+                @include S(height, 20px);
+                @include S(margin-left, 2px);
+                @include S(margin-right, 4px);
+                opacity: 0.6;
+                cursor: pointer;
+                pointer-events: all;
+                transition: opacity 0.12s ease-in-out;
+
+                @include DarkThemeInvert;
+
+                $disabledOpacity: 0.2;
+                $enabledOpacity: 0.6;
+
+                &:hover {
+                    opacity: $enabledOpacity + 0.1;
+                }
+
+                &.alreadyPinned {
+                    opacity: $disabledOpacity !important;
+
+                    &:hover {
+                        opacity: $disabledOpacity + 0.1 !important;
+                    }
+                }
+
+                &.isGoal {
+                    /* @load-async */
+                    background: url("../res/ui/icons/current_goal_marker.png") center center / 95% no-repeat;
+                    opacity: $disabledOpacity !important;
+                    cursor: default;
+                    pointer-events: none;
+                }
+
+                &.pinned {
+                    opacity: $disabledOpacity;
+                    @include InlineAnimation(0.3s ease-in-out) {
+                        0% {
+                            opacity: 1;
+                            transform: scale(0.8);
+                        }
+
+                        30% {
+                            opacity: 1;
+                            transform: scale(1.2);
+                        }
+
+                        100% {
+                            transform: scale(1);
+                        }
+                    }
+                    &:hover {
+                        opacity: $disabledOpacity + 0.1;
+                    }
+                }
+
+                &.unpinned {
+                    opacity: $enabledOpacity;
+                    @include InlineAnimation(0.3s ease-in-out) {
+                        0% {
+                            opacity: 1;
+                            transform: scale(0.8);
+                        }
+
+                        30% {
+                            opacity: 1;
+                            transform: scale(1.2);
+                        }
+
+                        100% {
+                            transform: scale(1);
+                        }
+                    }
+                    &:hover {
+                        opacity: $enabledOpacity + 0.1;
+                    }
+                }
+            }
 
             button.buy {
                 grid-column: 3 / 4;

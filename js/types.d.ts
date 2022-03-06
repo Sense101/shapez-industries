@@ -37,7 +37,7 @@ declare const desiredMsDelay: number;
 declare let lastTick: number;
 declare module "shapez/core/config.local" {
     namespace _default {
-        export const externalModUrl: string[];
+        export const externalModUrl: string;
     }
     export default _default;
 }
@@ -1568,7 +1568,7 @@ declare module "shapez/core/rectangle" {
          */
         containsCircle(x: number, y: number, radius: number): boolean;
         /**
-         * Returns if hte rectangle contains the given point
+         * Returns if the rectangle contains the given point
          * @param {number} x
          * @param {number} y
          * @returns {boolean}

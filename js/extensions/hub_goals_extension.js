@@ -31,17 +31,17 @@ export const HubGoalsExtension = ({ $old }) => ({
         let reward = enumHubGoalRewards.no_reward_freeplay;
 
         // this is super messy, but I really don't care
-        if (this.level < 1100 && this.level % 10 == 0) {
+        if (this.level < 1000 && this.level % 10 == 0) {
             reward = newHubGoalRewards.reward_upgrade_tier;
-        } else if (this.level < 11000 && this.level % 100 == 0) {
+        } else if (this.level < 10000 && this.level % 100 == 0) {
             reward = newHubGoalRewards.reward_upgrade_tier;
-        } else if (this.level < 110000 && this.level % 1000 == 0) {
+        } else if (this.level < 100000 && this.level % 1000 == 0) {
             reward = newHubGoalRewards.reward_upgrade_tier;
-        } else if (this.level < 1100000 && this.level % 10000 == 0) {
+        } else if (this.level < 1000000 && this.level % 10000 == 0) {
             reward = newHubGoalRewards.reward_upgrade_tier;
-        } else if (this.level < 11000000 && this.level % 100000 == 0) {
+        } else if (this.level < 10000000 && this.level % 100000 == 0) {
             reward = newHubGoalRewards.reward_upgrade_tier;
-        } else if (this.level < 110000000 && this.level % 1000000 == 0) {
+        } else if (this.level < 100000000 && this.level % 1000000 == 0) {
             reward = newHubGoalRewards.reward_upgrade_tier;
         }
 

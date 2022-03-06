@@ -28,9 +28,9 @@ export const MainMenuExtension = ({ $old }) => ({
         if (difference.missing.length === 0 && difference.extra.length === 0) {
             return Promise.resolve();
         }
-        const upgradingSave =
-            difference.missing.find(m => m.name == shapezIndustriesName) &&
-            difference.extra.find(m => m.name == shapezIndustriesName);
+        const missing = difference.missing.find(m => m.name == shapezIndustriesName);
+        const extra = difference.extra.find(m => m.name == shapezIndustriesName);
+        const upgradingSave = missing && extra;
 
         let dialogHtml = T.dialogs.modsDifference.desc;
 
@@ -51,7 +51,7 @@ export const MainMenuExtension = ({ $old }) => ({
                     return `
                         <div class="dialogModsMod">
                             <div class="name">${mod.name}</div>
-                            <div class="version" style="display:inline-block;background:green;border-radius:2px;color:white;margin-right:5px;margin-top:3px;text-align:center;padding:2px;">
+                            <div class="version" style="display:inline-block;background:#66bb6a;border-radius:2px;color:white;margin-right:5px;margin-top:3px;text-align:center;padding:2px;">
                                 ${T.mods.version} 
                                 ${mod.version}
                                 - updating is safe!

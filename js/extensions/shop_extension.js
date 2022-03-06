@@ -15,7 +15,7 @@ import { newHubGoalRewards } from "../new_hub_goals";
 
 export const HUDShopExtension = ({ $old }) => ({
     createElements(parent) {
-        this.maxUpgradeTier = 1;
+        this.maxUpgradeTier = this.maxUpgradeTier || 1;
 
         this.root.signals.storyGoalCompleted.add((level, reward) => {
             if (reward == newHubGoalRewards.reward_upgrade_tier) {
@@ -135,10 +135,6 @@ export const HUDShopExtension = ({ $old }) => ({
                 const progressLabel = document.createElement("label");
                 progressContainer.appendChild(progressLabel);
 
-                const pinButton = document.createElement("button");
-                pinButton.classList.add("pin");
-                container.appendChild(pinButton);
-
                 let infoDetector;
                 const viewInfoButton = document.createElement("button");
                 viewInfoButton.classList.add("showInfo");
@@ -150,6 +146,10 @@ export const HUDShopExtension = ({ $old }) => ({
                 infoDetector.click.add(() =>
                     this.root.hud.signals.viewShapeDetailsRequested.dispatch(shapeDef)
                 );
+
+                const pinButton = document.createElement("button");
+                pinButton.classList.add("pin");
+                container.appendChild(pinButton);
 
                 const currentGoalShape = this.root.hubGoals.currentGoal.definition.getHash();
                 if (shape === currentGoalShape) {
@@ -245,10 +245,6 @@ export function calculateMaxTierOnDeserialize(modInterface) {
                 const reward = levels[i].reward;
                 this.gainedRewards[reward] = (this.gainedRewards[reward] || 0) + 1;
                 if (reward) {
-                    if (reward == newHubGoalRewards.reward_upgrade_tier) {
-                        // @ts-ignore shop DOES exist
-                        this.root.hud.parts.shop.maxUpgradeTier++;
-                    }
                     if (reward == newHubGoalRewards.reward_research_t2) {
                         // @ts-ignore research DOES exist
                         this.root.hud.parts.research.tier = 2;
