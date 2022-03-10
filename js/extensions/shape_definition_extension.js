@@ -362,7 +362,8 @@ export const StaticDefinitionExtension = ({ $old }) => ({
             }
 
             // now loop through items to complete links
-            for (let itemIndex = 0; itemIndex < 4; ++itemIndex) {
+            for (let j = 0; j < 8; ++j) {
+                const itemIndex = j % 4;
                 const item = items[itemIndex];
                 const lastItem = items[(itemIndex + 3) % 4];
 

@@ -110,7 +110,7 @@ export const HUDShopExtension = ({ $old }) => ({
                     formatBigNumber(currentTierMultiplier)
                 );
                 handle.maxTierPopup.innerText = `Unlock upgrades tier ${
-                    this.maxUpgradeTier + 1
+                    this.maxUpgradeTier + 2
                 } from a hub level to progress further!`;
             } else {
                 // Set description

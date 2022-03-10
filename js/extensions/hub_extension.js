@@ -86,7 +86,7 @@ export const HubSystemExtension = ({ $old }) => ({
         let rewardTitle = T.storyRewards[goal.reward].title;
         if (goal.reward == newHubGoalRewards.reward_upgrade_tier) {
             // @ts-ignore shop does exist
-            rewardTitle = rewardTitle.replace("<x>", String(this.root.hud.parts.shop.maxUpgradeTier + 1));
+            rewardTitle = rewardTitle.replace("<x>", String(this.root.hud.parts.shop.maxUpgradeTier + 2));
         }
         // Reward
         const rewardText = rewardTitle.toUpperCase();
