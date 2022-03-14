@@ -91,8 +91,8 @@ const newRewardTranslations = {
         desc: "Upgrades go brrr!<br><br>You can now unlock the next tier of upgrades... And that's about it! What did you expect?",
     },
     [newHubGoalRewards.reward_quad_painter]: {
-        title: "Quad Painter",
-        desc: "You've unlocked the <strong>Quad Painter</strong>! This is <strong>NOT THE SAME</strong> as the quad painter of the base game. Instead, this painter accepts up to four colour inputs, and only paints the <strong>layers</strong> corresponding to the active wire inputs. Make sure to attach wires though, otherwise it won't function!",
+        title: "Layer Painter",
+        desc: "You've unlocked the <strong>Layer Painter</strong>! This is <strong>NOT THE SAME</strong> as the quad painter of the base game. Instead, this painter accepts up to four colour inputs, and only paints the <strong>layers</strong> corresponding to the active wire inputs. Make sure to attach wires though, otherwise it won't function!",
     },
     [newHubGoalRewards.reward_quad_stacker]: {
         title: "Quad Stacker",

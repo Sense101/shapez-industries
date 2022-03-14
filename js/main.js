@@ -393,6 +393,7 @@ class ModImpl extends Mod {
             buildings: {
                 painter: {
                     quad: {
+                        name: "Layer Painter",
                         description:
                             "Allows you to color each <strong>LAYER</strong> of a shape individually. Only slots with a <strong>truthy signal</strong> on the wires layer will be painted!",
                     },
