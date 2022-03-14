@@ -72,7 +72,7 @@ export class MetaHyperlinkBuilding extends MetaBuilding {
                 rotationVariant: 2,
             },
             {
-                name: "Hyperlink Entrance",
+                name: "Hyperlink Input",
                 description: "Inputs up to three belts onto a hyperlink.",
                 variant: enumHyperlinkVariants.entrance,
             },

@@ -1,6 +1,6 @@
 import { Loader } from "shapez/core/loader";
 import { STOP_PROPAGATION } from "shapez/core/signal";
-import { makeDiv } from "shapez/core/utils";
+import { formatBigNumber, makeDiv } from "shapez/core/utils";
 import { Vector } from "shapez/core/vector";
 import { enumMouseButton } from "shapez/game/camera";
 import { HUDPinnedShapes } from "shapez/game/hud/parts/pinned_shapes";
@@ -239,12 +239,11 @@ export const BlueprintPlacerExtension = ({ $old }) => ({
             for (let i = 0; i < costs.length; i++) {
                 if (costs[i] > 0) {
                     this.costDisplayText[i].parentElement.classList.remove("hidden");
-                    this.costDisplayText[i].innerText = "" + costs[i];
+                    this.costDisplayText[i].innerText = "" + formatBigNumber(costs[i]);
                 } else {
                     this.costDisplayText[i].parentElement.classList.add("hidden");
                 }
             }
-            this.costDisplayText.innerText = "" + blueprint.getCost();
         }
     },
 
