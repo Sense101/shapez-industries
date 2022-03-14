@@ -133,7 +133,7 @@ const newRewardTranslations = {
             an area (Hold CTRL, then drag with your mouse), and press 'C' to
             copy it.<br><br>Pasting it is <strong>not free</strong>, you need to
             produce <strong>bugprints</strong> to afford it!.<br><br>
-            IMPORTANT: not that bugprints can <strong>ONLY</strong> copy <strong>transport</strong> buildings. Other buildings will be able to be copied with something else later!`,
+            IMPORTANT: note that bugprints can <strong>ONLY</strong> copy <strong>transport</strong> buildings. Other buildings will be able to be copied with something else later!`,
     },
     reward_wires_painter_and_levers: {
         title: "Wires Layer",

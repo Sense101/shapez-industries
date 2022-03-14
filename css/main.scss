@@ -34,7 +34,8 @@ $tutorial_images: (
 }
 
 /* Unique code for layer painter, as the background image has to actually change */
-.buildingImage[data-icon="building_tutorials/painter-quad.png"] {
+.buildingImage[data-icon="building_tutorials/painter-quad.png"],
+.buildingExplanation[data-icon="building_tutorials/painter-quad.png"] {
     background-image: url("../res/ui/tutorial_images/layer-painter.png") !important;
 }
 
