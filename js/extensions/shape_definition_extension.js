@@ -432,6 +432,10 @@ function isValidShortKeyInternal(key) {
             return false;
         }
 
+        if (text == "--------") {
+            return false;
+        }
+
         /** @type {Array<ShapeLayerItem>} */
         const items = [];
         /** @type {ShapeLayerItem} */
